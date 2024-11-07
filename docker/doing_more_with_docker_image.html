@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>doing_more_with_docker_image.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="doing-more-with-docker-images">Doing More With Docker Images</h1>
+<p>In the previous exercise you pulled down images from <a href="https://store.docker.com">Docker Store</a> to run in your containers. Then you ran multiple instances and noted how each instance was isolated from the others. We hinted that this is used in many production IT environments every day but obviously we need a few more tools in our belt to get to the point where Docker can become a true time &amp; money saver.</p>
+<p>First thing you may want to do is figure out how to create our own images. While there are over 700K images on <a href="https://store.docker.com">Docker Store</a> it is almost certain that none of them are exactly what you run in your data center today. Even something as common as a Windows OS image would get its own tweaks before you actually run it in production. In the <a href="/ops-s1-hello">first lab</a>, we created a file called “hello.txt” in one of our container instances. If that instance of our Alpine container was something we wanted to re-use in future containers and share with others, we would need to create a custom image that everyone could use.</p>
+<p>We will start with the simplest form of image creation, in which we simply <code>commit</code> one of our container instances as an image. Then we will explore a much more powerful and useful method for creating images: the Dockerfile.</p>
+<p>We will then see how to get the details of an image through the inspection and explore the filesystem to have a better understanding of what happens under the hood.</p>
+<h2 id="image-creation-from-a-container">Image creation from a container</h2>
+<p>Let’s start by running an interactive shell in an alpine container:</p>
+<pre class="hljs"><code><div>docker run -it alpine sh
+</div></code></pre>
+<p>As you know from earlier labs, you just grabbed the image called alpine from Docker Store and are now running the sh shell inside that container.</p>
+<p>To customize things a little bit we will install a package called <a href="http://www.figlet.org" title="make large letters out of ordinary text">figlet</a> in this container. Your container should still be running so type the following commands at your alpine container command line:</p>
+<pre class="hljs"><code><div>apk add figlet
+figlet <span class="hljs-string">"Hello Docker"</span>
+</div></code></pre>
+<p>You should see the words “hello docker” printed out in large ascii characters on the screen.</p>
+<p>For reference:</p>
+<pre class="hljs"><code><div>/ <span class="hljs-comment"># apk add figlet</span>
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.20/main/x86_64/APKINDEX.tar.gz
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.20/community/x86_64/APKINDEX.tar.gz
+(1/1) Installing figlet (2.2.5-r3)
+Executing busybox-1.36.1-r28.trigger
+OK: 9 MiB <span class="hljs-keyword">in</span> 15 packages
+
+/ <span class="hljs-comment"># figlet "Hello Docker"</span>
+ _   _      _ _         ____             _
+| | | | ___| | | ___   |  _ \  ___   ___| | _____ _ __
+| |_| |/ _ \ | |/ _ \  | | | |/ _ \ / __| |/ / _ \ <span class="hljs-string">'__|
+|  _  |  __/ | | (_) | | |_| | (_) | (__|   &lt;  __/ |
+|_| |_|\___|_|_|\___/  |____/ \___/ \___|_|\_\___|_|
+    
+</span></div></code></pre>
+<p>Go ahead and exit from this container</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">exit</span>
+</div></code></pre>
+<p>Now let us pretend this new figlet application is quite useful and you want to share it with the rest of your team. You <code>could</code> tell them to do exactly what you did above and install figlet in to their own container, which is simple enough in this example. But if this was a real world application where you had just installed several packages and run through a number of configuration steps the process could get cumbersome and become quite error prone. Instead, it would be easier to create an <code>image</code> you can share with your team.</p>
+<p>To start, we need to get the ID of this container using the <code>docker ps</code> command (do not forget the <code>-a</code> option as the non running container are not returned by the <code>ps</code> command).</p>
+<pre class="hljs"><code><div>$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND   CREATED          STATUS        PORTS     NAMES
+ed48b18e2856   alpine    <span class="hljs-string">"sh"</span>      10 minutes ago   Exited (127) 17 seconds ago             frosty_rhodes
+</div></code></pre>
+<p>Before we create our own image, we might want to inspect all the changes we made. Try typing the command <code>docker container diff &lt;container ID&gt;</code> for the container you just created.</p>
+<p>For Example:</p>
+<pre class="hljs"><code><div>$ docker container  diff ed48b18e2856
+C /root
+A /root/.ash_history
+C /usr
+C /usr/share
+A /usr/share/figlet
+A /usr/share/figlet/fonts
+A /usr/share/figlet/fonts/block.flf
+A /usr/share/figlet/fonts/jis0201.flc
+A /usr/share/figlet/fonts/8859-2.flc
+A /usr/share/figlet/fonts/8859-7.flc
+A /usr/share/figlet/fonts/smscript.flf
+A /usr/share/figlet/fonts/mini.flf
+A /usr/share/figlet/fonts/term.flf
+A /usr/share/figlet/fonts/646-ca2.flc
+A /usr/share/figlet/fonts/646-dk.flc
+A /usr/share/figlet/fonts/646-it.flc
+A /usr/share/figlet/fonts/646-pt2.flc
+A /usr/share/figlet/fonts/hz.flc
+A /usr/share/figlet/fonts/smshadow.flf
+A /usr/share/figlet/fonts/646-se.flc
+A /usr/share/figlet/fonts/digital.flf
+A /usr/share/figlet/fonts/shadow.flf
+A /usr/share/figlet/fonts/small.flf
+A /usr/share/figlet/fonts/ushebrew.flc
+A /usr/share/figlet/fonts/646-fr.flc
+A /usr/share/figlet/fonts/script.flf
+A /usr/share/figlet/fonts/standard.flf
+A /usr/share/figlet/fonts/utf8.flc
+A /usr/share/figlet/fonts/646-se2.flc
+A /usr/share/figlet/fonts/lean.flf
+A /usr/share/figlet/fonts/ivrit.flf
+A /usr/share/figlet/fonts/646-gb.flc
+A /usr/share/figlet/fonts/banner.flf
+A /usr/share/figlet/fonts/646-kr.flc
+A /usr/share/figlet/fonts/646-pt.flc
+A /usr/share/figlet/fonts/8859-8.flc
+A /usr/share/figlet/fonts/uskata.flc
+A /usr/share/figlet/fonts/646-ca.flc
+A /usr/share/figlet/fonts/646-cn.flc
+A /usr/share/figlet/fonts/646-irv.flc
+A /usr/share/figlet/fonts/646-cu.flc
+A /usr/share/figlet/fonts/646-es2.flc
+A /usr/share/figlet/fonts/646-no2.flc
+A /usr/share/figlet/fonts/8859-9.flc
+A /usr/share/figlet/fonts/koi8r.flc
+A /usr/share/figlet/fonts/646-es.flc
+A /usr/share/figlet/fonts/big.flf
+A /usr/share/figlet/fonts/bubble.flf
+A /usr/share/figlet/fonts/frango.flc
+A /usr/share/figlet/fonts/upper.flc
+A /usr/share/figlet/fonts/646-de.flc
+A /usr/share/figlet/fonts/646-hu.flc
+A /usr/share/figlet/fonts/8859-3.flc
+A /usr/share/figlet/fonts/mnemonic.flf
+A /usr/share/figlet/fonts/slant.flf
+A /usr/share/figlet/fonts/646-no.flc
+A /usr/share/figlet/fonts/8859-4.flc
+A /usr/share/figlet/fonts/8859-5.flc
+A /usr/share/figlet/fonts/646-jp.flc
+A /usr/share/figlet/fonts/646-yu.flc
+A /usr/share/figlet/fonts/ilhebrew.flc
+A /usr/share/figlet/fonts/moscow.flc
+A /usr/share/figlet/fonts/smslant.flf
+C /usr/bin
+A /usr/bin/showfigfonts
+A /usr/bin/figlist
+A /usr/bin/chkfont
+A /usr/bin/figlet
+C /var
+C /var/cache
+C /var/cache/apk
+A /var/cache/apk/APKINDEX.e0297a25.tar.gz
+A /var/cache/apk/APKINDEX.f86367c4.tar.gz
+C /etc
+C /etc/apk
+C /etc/apk/world
+C /lib
+C /lib/apk
+C /lib/apk/db
+C /lib/apk/db/scripts.tar
+C /lib/apk/db/triggers
+C /lib/apk/db/installed
+</div></code></pre>
+<p>You should see a list of all the files that were added to or changed in the container when you installed figlet. Docker keeps track of all of this information for us. This is part of the <em><code>layer</code></em> concept we will explore in a few minutes.</p>
+<p>Now, to create an image we need to “<code>commit</code>” this container. Commit creates an image locally on the system running the Docker engine. Run the following command, using the container ID you retrieved, in order to commit the container and create an image out of it.</p>
+<p><code>docker container commit CONTAINER_ID</code></p>
+<p>For Example:</p>
+<pre class="hljs"><code><div>$ docker container commit ed48b18e2856
+sha256:74149b97e8ff53a6ca4ef5732424592b1b6493d80dd047eeb16a6d89741d960c
+</div></code></pre>
+<p>That’s it - you have created your first image! Once it has been commited, we can see the newly created image in the list of available images.</p>
+<pre class="hljs"><code><div>docker image ls
+</div></code></pre>
+<p>You should see something like this:</p>
+<pre class="hljs"><code><div>$ docker images ls
+REPOSITORY   TAG       IMAGE ID       CREATED          SIZE
+&lt;none&gt;       &lt;none&gt;    74149b97e8ff   41 seconds ago   10.8MB
+alpine       latest    1d34ffeaf190   10 days ago      7.79MB
+</div></code></pre>
+<p>Note that the image we pulled down in the first step (<code>alpine</code>) is listed here along with our own custom image. Except our custom image has no information in the <code>REPOSITORY</code> or <code>TAG</code> columns, which would make it tough to identify exactly what was in this container if we wanted to share amongst multiple team members.</p>
+<p>Adding this information to an image is known as <em><code>tagging</code></em> an image. From the previous command, get the ID of the newly created image and tag it so it’s named <strong>ourfiglet</strong>:</p>
+<pre class="hljs"><code><div>docker image tag &lt;IMAGE_ID&gt; ourfiglet
+</div></code></pre>
+<p>For example:</p>
+<pre class="hljs"><code><div>docker image tag 74149b97e8ff ourfiglet
+</div></code></pre>
+<p>Now we have the more friendly name “ourfiglet” that we can use to identify our image.</p>
+<pre class="hljs"><code><div>$ docker image ls
+REPOSITORY   TAG       IMAGE ID       CREATED         SIZE
+ourfiglet    latest    74149b97e8ff   6 minutes ago   10.8MB
+alpine       latest    1d34ffeaf190   10 days ago     7.79MB
+</div></code></pre>
+<p>Here is a graphical view of what we just completed: <img src="https://training.play-with-docker.com/images/ops-images-commit.svg" alt="commit container to image"></p>
+<p>Now we will run a container based on the newly created <em><code>ourfiglet</code></em> image:</p>
+<pre class="hljs"><code><div>docker container run ourfiglet figlet hello
+</div></code></pre>
+<p>As the figlet package is present in our <em><code>ourfiglet</code></em> image, the command returns the following output:</p>
+<pre class="hljs"><code><div> _          _ _
+| |__   ___| | | ___
+| <span class="hljs-string">'_ \ / _ \ | |/ _ \
+| | | |  __/ | | (_) |
+|_| |_|\___|_|_|\___/
+
+</span></div></code></pre>
+<p>This example shows that we can create a container, add all the libraries and binaries in it and then commit it in order to create an image. We can then use that image just as we would for images pulled down from the Docker Store. We still have a slight issue in that our image is only stored locally. To share the image we would want to <em>push</em> the image to a registry somewhere. This is beyond the scope of this lab but you can get a free Docker ID, run these labs, and push to the <a href="https://hub.docker.com/">Docker Community Hub</a> from your own system using <a href="https://www.docker.com/docker-windows">Docker for Windows</a> or <a href="https://www.docker.com/docker-mac">Docker for Mac</a> if you want to try this out.</p>
+<p>As mentioned above, this approach of manually installing software in a container and then committing it to a custom image is just one way to create an image. It works fine and is quite common. However, there is a more powerful way to create images. In the following exercise we will see how images are created using a <em><code>Dockerfile</code></em>, which is a text file that contains all the instructions to build an image.</p>
+<h2 id="image-creation-using-a-dockerfile">Image creation using a Dockerfile</h2>
+<p>Instead of creating a static binary image, we can use a file called a <em><code>Dockerfile</code></em> to create an image. The final result is essentially the same, but with a Dockerfile we are supplying the instructions for building the image, rather than just the raw binary files. This is useful because it becomes much easier to manage changes, especially as your images get bigger and more complex.</p>
+<p>For example, if a new version of figlet is released we would either have to re-create our image from scratch, or run our image and upgrade the installed version of figlet. In contrast, a <code>Dockerfile</code> would include the <code>apk</code> commands we used to install figlet so that we - or anybody using the Dockerfile - could simply recompose the image using those instructions.</p>
+<p>It is kind of like the old adage:</p>
+<blockquote>
+<p><em>Give a sysadmin an image and their app will be up-to-date for a day, give a sysadmin a Dockerfile and their app will always be up-to-date</em>.</p>
+</blockquote>
+<p>Ok, maybe that’s a bit of a stretch but Dockerfiles are powerful because they allow us to manage <em>how</em> an image is built, rather than just managing binaries. In practice, Dockerfiles can be managed the same way you might manage source code: they are simply text files so almost any version control system can be used to manage Dockerfiles over time.</p>
+<p>We will use a simple example in this section and build a “hello world” application in Node.js. Do not be concerned if you are not familiar with Node.js: Docker (and this exercise) does not require you to know all these details.</p>
+<p>We will start by creating a file in which we retrieve the hostname and display it.</p>
+<p>NOTE: You should be at the Docker host’s command line (<code>$</code>). If you see a command line that looks similar to <code>/ #</code> then you are probably still inside your alpine container from the previous exercise. Type <code>exit</code> to return to the host command line.</p>
+<p>Type the following content into a file named <em>index.js</em>. You can use vi, vim or several other Linux editors in this exercise. If you need assistance with the Linux editor commands to do this follow this footnote[^1].</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">var</span> os = <span class="hljs-built_in">require</span>(<span class="hljs-string">"os"</span>);
+<span class="hljs-keyword">var</span> hostname = os.hostname();
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">"hello from "</span> + hostname);
+</div></code></pre>
+<p>The file we just created is the javascript code for our server. As you can probably guess, Node.js will simply print out a “hello” message. We will Docker-ize this application by creating a Dockerfile. We will use <strong>alpine</strong> as the base OS image, add a Node.js runtime and then copy our source code in to the container. We will also specify the default command to be run upon container creation.</p>
+<p>Create a file named <em><code>Dockerfile</code></em> and copy the following content into it. Again, help creating this file with Linux editors is here [^2].</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">FROM</span> alpine
+<span class="hljs-keyword">RUN</span><span class="bash"> apk update &amp;&amp; apk add nodejs</span>
+<span class="hljs-keyword">COPY</span><span class="bash"> . /app</span>
+<span class="hljs-keyword">WORKDIR</span><span class="bash"> /app</span>
+<span class="hljs-keyword">CMD</span><span class="bash"> [<span class="hljs-string">"node"</span>,<span class="hljs-string">"index.js"</span>]</span>
+</div></code></pre>
+<p>Let’s build our first image out of this Dockerfile and name it <em>hello:v0.1</em>:</p>
+<pre class="hljs"><code><div>docker image build -t hello:v0.1 .
+</div></code></pre>
+<p>Should see similar output</p>
+<pre class="hljs"><code><div>$ docker image build -t hello:v0.1 .
+[+] Building 3.4s (9/9) FINISHED                           docker:default
+ =&gt; [internal] load build definition from Dockerfile                 0.0s
+ =&gt; =&gt; transferring dockerfile: 131B                                 0.0s
+ =&gt; [internal] load .dockerignore                                    0.0s
+ =&gt; =&gt; transferring context: 2B                                      0.0s
+ =&gt; [internal] load metadata <span class="hljs-keyword">for</span> docker.io/library/alpine:latest     0.0s
+ =&gt; [1/4] FROM docker.io/library/alpine                              0.0s
+ =&gt; [internal] load build context                                    0.0s
+ =&gt; =&gt; transferring context: 4.79kB                                  0.0s
+ =&gt; [2/4] RUN apk update &amp;&amp; apk add nodejs                           2.7s
+ =&gt; [3/4] COPY . /app                                                0.1s
+ =&gt; [4/4] WORKDIR /app                                               0.0s
+ =&gt; exporting to image                                               0.5s
+ =&gt; =&gt; exporting layers                                              0.5s
+ =&gt; =&gt; writing image sha256:0a5f595ca89e37fd21152670da539b641531c8f  0.0s
+ =&gt; =&gt; naming to docker.io/library/hello:v0.1                        0.0s
+</div></code></pre>
+<p>This is what you just completed: <img src="https://training.play-with-docker.com/images/ops-images-dockerfile.svg" alt="build container from dockerfile"></p>
+<p>Now lets check created image exists</p>
+<pre class="hljs"><code><div>$ docker image ls
+REPOSITORY   TAG       IMAGE ID       CREATED          SIZE
+hello        v0.1      0a5f595ca89e   34 seconds ago   66MB
+ourfiglet    latest    74149b97e8ff   20 minutes ago   10.8MB
+alpine       latest    1d34ffeaf190   10 days ago      7.79MB
+</div></code></pre>
+<p>We then start a container to check that our applications runs correctly:</p>
+<pre class="hljs"><code><div>docker container run hello:v0.1
+</div></code></pre>
+<p>You should then have an output similar to the following one (the ID will be different though).</p>
+<pre class="hljs"><code><div>hello from 1f59348d731a
+</div></code></pre>
+<p><strong>What just happened?</strong> We created two files: our application code (index.js) is a simple bit of javascript code that prints out a message. And the Dockerfile is the instructions for Docker engine to create our custom container. This Dockerfile does the following:</p>
+<ol>
+<li>Specifies a base image to pull <strong>FROM</strong> - the <em>alpine</em> image we used in earlier labs.</li>
+<li>Then it <strong>RUN</strong>s two commands (<em>apk update</em> and <em>apk add</em>) inside that container which installs the Node.js server.</li>
+<li>Then we told it to <strong>COPY</strong> files from our working directory in to the container. The only file we have right now is our <em>index.js</em>.</li>
+<li>Next we specify the <strong>WORKDIR</strong> - the directory the container should use when it starts up</li>
+<li>And finally, we gave our container a command (<strong>CMD</strong>) to run when the container starts.</li>
+</ol>
+<p>Recall that in previous labs we put commands like <code>echo &quot;hello world&quot;</code> on the command line. With a Dockerfile we can specify precise commands to run for everyone who uses this container. Other users do not have to build the container themselves once you push your container up to a repository (which we will cover later) or even know what commands are used. The <em>Dockerfile</em> allows us to specify <em>how</em> to build a container so that we can repeat those steps precisely everytime and we can specify <em>what</em> the container should do when it runs. There are actually multiple methods for specifying the commands and accepting parameters a container will use, but for now it is enough to know that you have the tools to create some pretty powerful containers.</p>
+<h3 id="image-layers">Image layers</h3>
+<p>There is something else interesting about the images we build with Docker. When running they appear to be a single OS and application. But the images themselves are actually built in <strong><em>layers</em></strong>. If you scroll back and look at the output from your <code>docker image build</code> command you will notice that there were 5 steps and each step had several tasks. You should see several “fetch” and “pull” tasks where Docker is grabbing various bits from Docker Store or other places. These bits were used to create one or more container <em>layers</em>. Layers are an important concept. To explore this, we will go through another set of exercises.</p>
+<p>First, check out the image you created earlier by using the <em>history</em> command (remember to use the <code>docker image ls</code> command from earlier exercises to find your image IDs):</p>
+<pre class="hljs"><code><div>docker image <span class="hljs-built_in">history</span> &lt;image ID&gt;
+</div></code></pre>
+<p>For example</p>
+<pre class="hljs"><code><div>$ docker image <span class="hljs-built_in">history</span> fff3ebe6bffa
+IMAGE          CREATED         CREATED BY     SIZE      COMMENT
+fff3ebe6bffa   3 minutes ago   CMD [<span class="hljs-string">"node"</span> <span class="hljs-string">"index.js"</span>]     0B        buildkit.dockerfile.v0
+&lt;missing&gt;      3 minutes ago   WORKDIR /app     0B        buildkit.dockerfile.v0
+&lt;missing&gt;      3 minutes ago   COPY . /app <span class="hljs-comment"># buildkit     4.33kB    buildkit.dockerfile.v0</span>
+&lt;missing&gt;      7 minutes ago   RUN /bin/sh -c apk update &amp;&amp; apk add nodejs …   58.2MB    buildkit.dockerfile.v0
+&lt;missing&gt;      10 days ago     /bin/sh -c <span class="hljs-comment">#(nop)  CMD ["/bin/sh"]     0B</span>
+&lt;missing&gt;      10 days ago     /bin/sh -c <span class="hljs-comment">#(nop) ADD file:e3abcdba177145039…   7.79MB</span>
+</div></code></pre>
+<p>What you see is the list of intermediate container images that were built along the way to creating your final Node.js app image. Some of these intermediate images will become <em>layers</em> in your final container image. In the history command output, the original Alpine layers are at the bottom of the list and then each customization we added in our Dockerfile is its own step in the output. This is a powerful concept because it means that if we need to make a change to our application, it may only affect a single layer! To see this, we will modify our app a bit and create a new image.</p>
+<p>Type the following in to your console window:</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">echo</span> <span class="hljs-string">"console.log(\"this is v0.2\");"</span> &gt;&gt; index.js
+</div></code></pre>
+<p>This will add a new line to the bottom of your <em>index.js</em> file from earlier so your application will output one additional line of text. Now we will build a new image using our updated code. We will also tag our new image to mark it as a new version so that anybody consuming our images later can identify the correct version to use:</p>
+<pre class="hljs"><code><div>docker image build -t hello:v0.2 .
+</div></code></pre>
+<p>You should see output similar to this:</p>
+<pre class="hljs"><code><div>[+] Building 0.2s (9/9) FINISHED                           docker:default =&gt; [internal] load build definition from Dockerfile                 0.0s =&gt; =&gt; transferring dockerfile: 131B                                 0.0s =&gt; [internal] load .dockerignore                                    0.0s =&gt; =&gt; transferring context: 2B                                      0.0s =&gt; [internal] load metadata <span class="hljs-keyword">for</span> docker.io/library/alpine:latest     0.0s =&gt; [1/4] FROM docker.io/library/alpine                              0.0s =&gt; [internal] load build context                                    0.0s =&gt; =&gt; transferring context: 1.59kB                                  0.0s =&gt; CACHED [2/4] RUN apk update &amp;&amp; apk add nodejs                    0.0s =&gt; [3/4] COPY . /app                                                0.1s
+ =&gt; [4/4] WORKDIR /app                                               0.0s
+ =&gt; exporting to image                                               0.0s
+ =&gt; =&gt; exporting layers                                              0.0s
+ =&gt; =&gt; writing image sha256:12b890dc72c0921dc061a566dd352c751e5f9e4  0.0s
+ =&gt; =&gt; naming to docker.io/library/hello:v0.2                        0.0s
+</div></code></pre>
+<p>Notice something interesting in the build steps this time. In the output it goes through the same five steps, but notice that in some steps it says <strong>Using cache</strong>.</p>
+<p><img src="https://training.play-with-docker.com/images/ops-images-cache.svg" alt="layers and cache"></p>
+<p>Docker recognized that we had already built some of these layers in our earlier image builds and since nothing had changed in those layers it could simply use a cached version of the layer, rather than pulling down code a second time and running those steps. Docker’s layer management is very useful to IT teams when patching systems, updating or upgrading to the latest version of code, or making configuration changes to applications. Docker is intelligent enough to build the container in the most efficient way possible, as opposed to repeatedly building an image from the ground up each and every time.</p>
+<h3 id="image-inspection">Image Inspection</h3>
+<p>Now let us reverse our thinking a bit. What if we get a container from Docker Store or another registry and want to know a bit about what is inside the container we are consuming? Docker has an <strong>inspect</strong> command for images and it returns details on the container image, the commands it runs, the OS and more.</p>
+<p>The <em><code>alpine</code></em> image should already be present locally from the exercises above (use <code>docker image ls</code> to confirm), if it’s not, run the following command to pull it down:</p>
+<pre class="hljs"><code><div>docker image pull alpine
+</div></code></pre>
+<p>Once we are sure it is there let’s inspect it.</p>
+<pre class="hljs"><code><div>docker image inspect alpine
+</div></code></pre>
+<p>There is a lot of information in there:</p>
+<ul>
+<li>the layers the image is composed of</li>
+<li>the driver used to store the layers</li>
+<li>the architecture / OS it has been created for</li>
+<li>metadata of the image</li>
+<li>…</li>
+</ul>
+<p>We will not go into all the details here but we can use some filters to just inspect particular details about the image. You may have noticed that the image information is in JSON format. We can take advantage of that to use the inspect command with some filtering info to just get specific data from the image.</p>
+<p>Let’s get the list of layers:</p>
+<pre class="hljs"><code><div>docker image inspect --format <span class="hljs-string">"{{ json .RootFS.Layers }}"</span> alpine
+</div></code></pre>
+<p>Alpine is just a small base OS image so there’s just one layer:</p>
+<pre class="hljs"><code><div>[<span class="hljs-string">"sha256:02f2bcb26af5ea6d185dcf509dc795746d907ae10c53918b6944ac85447a0c72"</span>]
+</div></code></pre>
+<p>Now let’s look at our custom Hello image. You will need the image ID (use <code>docker image ls</code> if you need to look it up):</p>
+<pre class="hljs"><code><div>docker image inspect --format <span class="hljs-string">"{{ json .RootFS.Layers }}"</span> &lt;image ID&gt;
+</div></code></pre>
+<p>Our Hello image is a bit more interesting (your sha256 hashes will vary):</p>
+<pre class="hljs"><code><div>$ docker image inspect --format <span class="hljs-string">"{{ json .RootFS.Layers }}"</span> hello:v0.2
+[<span class="hljs-string">"sha256:02f2bcb26af5ea6d185dcf509dc795746d907ae10c53918b6944ac85447a0c72"</span>,<span class="hljs-string">"sha256:b3c4cbb9c5c5be9c9229f72570e6b32d4114375a8cbe98cde09fa3e46cf463d5"</span>,<span class="hljs-string">"sha256:a857a8b2f3d0ca330b92f0cadbff927053e09dea7cb9c203df665ba0c490562b"</span>,<span class="hljs-string">"sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"</span>]
+</div></code></pre>
+<p>We have four layers in our application. Recall that we had the base Alpine image (the FROM command in our Dockerfile), then we had a RUN command to install some packages, then we had a COPY command to add in our javascript code. Those are our layers! If you look closely, you can even see that both <em><code>alpine</code></em> and <em><code>hello</code></em> are using the same base layer, which we know because they have the same sha256 hash.</p>
+<p>The tools and commands we explored in this lab are just the beginning. Docker Enterprise Edition includes private Trusted Registries with Security Scanning and Image Signing capabilities so you can further inspect and authenticate your images. In addition, there are policy controls to specify which users have access to various images, who can push and pull images, and much more.</p>
+<p>Another important note about layers: each layer is immutable. As an image is created and successive layers are added, the new layers keep track of the changes from the layer below. When you start the container running there is an additional layer used to keep track of any changes that occur as the application runs (like the “hello.txt” file we created in the earlier exercises). This design principle is important for both security and data management. If someone mistakenly or maliciously changes something in a running container, you can very easily revert back to its original state because the base layers cannot be changed. Or you can simply start a new container instance which will start fresh from your pristine image. And applications that create and store data (databases, for example) can store their data in a special kind of Docker object called a <strong><em>volume</em></strong>, so that data can persist and be shared with other containers. We will explore volumes in a later lab.</p>
+<p>Up next, we will look at more sophisticated applications that run across several containers and use Docker Compose and Docker Swarm to define our architecture and manage it.</p>
+<h4 id="terminology">Terminology</h4>
+<ul>
+<li><em>Layers</em> - A Docker image is built up from a series of layers. Each layer represents an instruction in the image’s Dockerfile. Each layer except the last one is read-only.</li>
+<li><em>Dockerfile</em> - A text file that contains all the commands, in order, needed to build a given image. The <a href="https://docs.docker.com/engine/reference/builder">Dockerfile reference</a> page lists the various commands and format details for Dockerfiles.</li>
+<li><em>Volumes</em> - A special Docker container layer that allows data to persist and be shared separately from the container itself. Think of volumes as a way to abstract and manage your persistent data separately from the application itself.</li>
+</ul>
+<h4 id="footnotes">Footnotes</h4>
+<ol>
+<li>
+<p>Type <code>vi index.js</code> then once the editor loads hit the <code>i</code> key. You can now type each of the commands as shown in the example. When you are finished hit the <code>&lt;esc&gt;</code> key then type <code>:wq</code> and that will save the file and take you back to the command prompt. You can type <code>ls</code> at the command prompt to ensure your <em>index.js</em> file is there or type <code>cat index.js</code> to make sure all the code is in the file. If you make a mistake in the editor and you have a hard time navigating the editor it might be easier to start fresh: simply type <code>&lt;esc&gt;</code> and then <code>:wq</code> if you are in the editor and then when you are back to the command line type <code>rm index.js</code> to delete the file and then start again.</p>
+</li>
+<li>
+<p>Type <code>vi Dockerfile</code> then once the editor loads hit the <code>i</code> key. Type in each line of the Dockerfile code as shown in the example - capitalization is important! - then hit the <code>&lt;esc&gt;</code> key followed by <code>:wq</code>. To verify your Dockerfile exists and is correct type <code>cat Dockerfile</code>. If you make a mistake in the editor and you have a hard time navigating the editor it might be easier to start fresh: simply type <code>&lt;esc&gt;</code> and then <code>:wq</code> if you are in the editor and then when you are back to the command line type <code>rm Dockerfile</code> and then start again.</p>
+</li>
+</ol>
+<hr>
+
+</body>
+</html>
