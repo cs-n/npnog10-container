@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>playing_with_docker.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="playing-with-docker">Playing with Docker</h1>
+<h2 id="playing-with-busybox">Playing with Busybox</h2>
+<p>Now that we have everything setup, it's time to get our hands dirty. In this section, we are going to run a <code>Busybox</code> container on our system and get a taste of the docker run command.</p>
+<h3 id="dcoker-pull">Dcoker Pull</h3>
+<p>To get started, let's run the following in our terminal:</p>
+<pre class="hljs"><code><div>docker pull busybox
+
+Using default tag: latest
+latest: Pulling from library/busybox
+ec562eabd705: Pull complete 
+Digest: sha256:5eef5ed34e1e1ff0a4ae850395cbf665c4de6b4b83a32a0bc7bcb998e24e7bbb
+Status: Downloaded newer image <span class="hljs-keyword">for</span> busybox:latest
+docker.io/library/busybox:latest
+
+</div></code></pre>
+<p>The pull command fetches the busybox image from the Docker registry and saves it to our system.</p>
+<p>Now, try pulling another image named <code>alpine</code>.</p>
+<pre class="hljs"><code><div>docker pull alpine
+Using default tag: latest
+latest: Pulling from library/alpine
+d25f557d7f31: Pull complete 
+Digest: sha256:77726ef6b57ddf65bb551896826ec38bc3e53f75cdde31354fbffb4f25238ebd
+Status: Downloaded newer image <span class="hljs-keyword">for</span> alpine:latest
+docker.io/library/alpine:latest
+</div></code></pre>
+<p>You can use the docker images command to see a list of all images on your system.</p>
+<pre class="hljs"><code><div>docker images
+REPOSITORY                                 TAG       IMAGE ID       CREATED         SIZE
+alpine                                     latest    f8c20f8bbcb6   5 months ago    7.38MB
+busybox                                    latest    65ad0d468eb1   12 months ago   4.26MB
+</div></code></pre>
+<h3 id="docker-run">Docker Run</h3>
+<p>Great! Let's now run a Docker container based on this image. To do that we are going to use the almighty <code>docker run</code> command.</p>
+<pre class="hljs"><code><div>docker run busybox
+$
+</div></code></pre>
+<p>Wait, nothing happened! Is that a bug? Well, no. Behind the scenes, a lot of stuff happened. When you call <code>run</code>, the Docker client finds the image (busybox in this case), loads up the container and then runs a command in that container. When we run <code>docker run busybox</code>, we didn't provide a command, so the container booted up, ran an empty command and then exited. Well, yeah - kind of a bummer. Let's try something more exciting.</p>
+<pre class="hljs"><code><div>docker run busybox <span class="hljs-built_in">echo</span> <span class="hljs-string">"hello from busybox"</span>
+hello from busybox
+</div></code></pre>
+<p>Nice - finally we see some output. In this case, the Docker client dutifully ran the <code>echo</code> command in our busybox container and then exited it. If you've noticed, all of that happened pretty quickly. Imagine booting up a virtual machine, running a command and then killing it. Now you know why they say containers are fast! Ok, now it's time to see the <code>docker ps</code> command. The <code>docker ps</code> command shows you all containers that are currently running.</p>
+<pre class="hljs"><code><div>docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+</div></code></pre>
+<p>As you can see, there are no running containers. We see a blank line. Let's try a more useful variant: <code>docker ps -a</code></p>
+<pre class="hljs"><code><div>docker ps -a
+CONTAINER ID        IMAGE           COMMAND                       CREATED             STATUS                      PORTS               NAMES
+8dcd96ac52d8        busybox         <span class="hljs-string">"echo hello from busybox"</span>     6 seconds ago       Exited (0) 5 seconds ago                        priceless_yalow
+c899304a9faf        busybox         <span class="hljs-string">"sh"</span>                          22 seconds ago      Exited (0) 20 seconds ago                       fervent_haibt
+14e5bd11d164        hello-world     <span class="hljs-string">"/hello"</span>                      2 minutes ago       Exited (0) 2 minutes ago                        thirsty_euclid
+</div></code></pre>
+<p>As you can see, there are three containers that have exited. The first two are the ones we created earlier. The third one is the hello-world container that we created earlier.</p>
+<p>So what we see above is a list of all containers that we ran. Do notice that the <code>STATUS</code> column shows that these containers exited a few minutes ago.</p>
+<p>You're probably wondering if there is a way to run more than just one command in a container. Let's try that now:</p>
+<pre class="hljs"><code><div>docker run -it busybox sh
+/ <span class="hljs-comment"># ls</span>
+bin   dev   etc   home  proc  root  sys   tmp   usr   var
+/ <span class="hljs-comment"># uptime</span>
+ 05:45:21 up  5:58,  0 users,  load average: 0.00, 0.01, 0.04
+</div></code></pre>
+<p>Running the <code>run</code> command with the <code>-it</code> flags attaches us to an interactive tty in the container. Now we can run as many commands in the container as we want. Take some time to run your favorite commands.</p>
+<p>That concludes a basics of the <code>docker run</code> command, which would most likely be the command you'll use most often. It makes sense to spend some time getting comfortable with it. To find out more about <code>run</code>, use <code>docker run --help</code> to see a list of all flags it supports. As we proceed further, we'll see a few more variants of <code>docker run</code>.</p>
+<h3 id="deleting-containers">Deleting containers</h3>
+<p>Now that we've seen how to create containers, let's see how to delete them.</p>
+<p>We saw above that we can still see remnants of the container even after we've exited by running <code>docker ps -a</code>. Throughout this tutorial, you'll run <code>docker run</code> multiple times and leaving stray containers will eat up disk space. Hence, as a rule of thumb, I clean up containers once I'm done with them. To do that, you can run the <code>docker rm</code> command. Just copy the container IDs from above and paste them alongside the command.</p>
+<pre class="hljs"><code><div>docker rm 8dcd96ac52d8
+8dcd96ac52d8
+</div></code></pre>
+<p>On deletion, you should see the IDs echoed back to you. If you have a bunch of containers to delete in one go, copy-pasting IDs can be tedious. In that case, you can simply run -</p>
+<pre class="hljs"><code><div>docker rm $(docker ps -a -q -f status=exited)
+</div></code></pre>
+<p>This command deletes all containers that have a status of exited. In case you're wondering, the <code>-q</code> flag, only returns the numeric IDs and <code>-f</code> filters output based on conditions provided. One last thing that'll be useful is the <code>--rm</code> flag that can be passed to <code>docker run</code> which automatically deletes the container once it's exited from. For one off docker runs, <code>--rm</code> flag is very useful.</p>
+<pre class="hljs"><code><div>docker run --rm busybox <span class="hljs-built_in">echo</span> <span class="hljs-string">"Hello from busybox again"</span> 
+Hello from busybox again
+</div></code></pre>
+<p>Now lets check docker process using <code>docker ps -a</code></p>
+<pre class="hljs"><code><div>docker ps -a
+CONTAINER ID        IMAGE           COMMAND                       CREATED             STATUS                      PORTS               NAMES
+</div></code></pre>
+<p>As you can see there is no remants of the container, docker automatically deleted the container once it's exited from.</p>
+<p>We can also use <code>docker container prune</code> command can be used to achieve the same effect.</p>
+<pre class="hljs"><code><div>docker run --rm busybox <span class="hljs-built_in">echo</span> <span class="hljs-string">"Hello from busybox again for testing docker dontainer prune"</span> 
+Hello from busybox again <span class="hljs-keyword">for</span> testing docker dontainer prune
+</div></code></pre>
+<p>Now run <code>docker container prune</code> command.</p>
+<pre class="hljs"><code><div>docker container prune
+WARNING! This will remove all stopped containers.
+Are you sure you want to <span class="hljs-built_in">continue</span>? [y/N] y
+Deleted Containers:
+900abe321309d9a17fb277e49d63e82ff689de744aa8cf51ff300e624fac2bc9
+
+Total reclaimed space: 0B
+</div></code></pre>
+<p>Lastly, you can also delete images that you no longer need by running <code>docker rmi</code>.</p>
+<pre class="hljs"><code><div>docker rmi busybox
+Untagged: busybox:latest
+Untagged: busybox@sha256:5eef5ed34e1e1ff0a4ae850395cbf665c4de6b4b83a32a0bc7bcb998e24e7bbb
+Deleted: sha256:65ad0d468eb1c558bf7f4e64e790f586e9eda649ee9f130cd0e835b292bbc5ac
+Deleted: sha256:d51af96cf93e225825efd484ea457f867cb2b967f7415b9a3b7e65a2f803838a
+</div></code></pre>
+<p>Now if to run <code>docker images</code>, you will not find <code>busybox</code> image no more.</p>
+<pre class="hljs"><code><div>docker images
+REPOSITORY                                 TAG       IMAGE ID       CREATED         SIZE
+alpine                                     latest    f8c20f8bbcb6   5 months ago    7.38MB
+</div></code></pre>
+<h3 id="daemonizing-docker-containers">Daemonizing Docker containers</h3>
+<p>In the previous section, we have seen how to run a container in the foreground. But in most cases, you will want to run a container in the background. To do this, you can use the <code>-d</code> flag.</p>
+<p>Now, Let us run <code>busybox</code> container in background and keep it running.</p>
+<pre class="hljs"><code><div>docker run -d -it busybox 
+a5266ecae48b4985bca87e3733a1ce5fa369ce8f5fdea3b43c2fbdbb61b97549
+</div></code></pre>
+<p>Now lets check busybox container exists and running.</p>
+<pre class="hljs"><code><div>docker ps
+CONTAINER ID   IMAGE           COMMAND         CREATED             STATUS                      PORTS               NAMES
+a5266ecae48b   busybox         <span class="hljs-string">"sh"</span>            43 seconds ago      Up 42 seconds                                   festive_buck
+</div></code></pre>
+<p>Now, Let us run some commands on just created <code>busybox</code> container.</p>
+<pre class="hljs"><code><div>docker <span class="hljs-built_in">exec</span> a5266ecae48b <span class="hljs-built_in">echo</span> <span class="hljs-string">"hello from daemonized busybox"</span>
+hello from daemonized busybox
+</div></code></pre>
+<p>Now, try runnning some of these commands inside <code>busybox</code> container like <code>ls, uptime, date, whoami, hostname</code>.</p>
+<h3 id="stop-docker-container">Stop Docker container</h3>
+<p>To stop a running container, you can use the <code>docker stop</code> command. This command sends a SIGTERM signal to the container, which gives the container a chance to gracefully shutdown. If the container does not shutdown within a certain amount of time, the SIGKILL signal is sent to force the container to stop.</p>
+<p>Let us stop <code>busybox</code> container.</p>
+<pre class="hljs"><code><div>docker stop a5266ecae48b
+a5266ecae48b
+
+</div></code></pre>
+<p>Now, check if <code>busybox</code> container is running or not.</p>
+<pre class="hljs"><code><div>docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+</div></code></pre>
+<pre class="hljs"><code><div>docker ps -a
+CONTAINER ID   IMAGE           COMMAND         CREATED          STATUS                               PORTS           NAMES
+a5266ecae48b   busybox         <span class="hljs-string">"sh"</span>            3 minutes ago    Exited (137) About a minute ago                      festive_buck
+</div></code></pre>
+<p>Do notice that the <code>STATUS</code> column shows that <code>busybox</code> container exited a few minutes ago.</p>
+<h3 id="starting-docker-container">Starting Docker container</h3>
+<p>To start a stopped container, you can use the <code>docker start</code> command. This command starts the container in the same state as it was when it was stopped.</p>
+<p>Let us start <code>busybox</code> container.</p>
+<pre class="hljs"><code><div>docker start a5266ecae48b
+a5266ecae48b
+</div></code></pre>
+<p>Now, check if <code>busybox</code> container is running or not.</p>
+<pre class="hljs"><code><div>docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED          STATUS              PORTS     NAMES
+a5266ecae48b   busybox   <span class="hljs-string">"sh"</span>      23 minutes ago   Up 37 seconds                 festive_buck
+</div></code></pre>
+<h3 id="restarting-docker-container">Restarting Docker container</h3>
+<p>To restart a container, you can use the <code>docker restart</code> command. This command stops the container and then starts it again.</p>
+<p>Let us restart <code>busybox</code> container.</p>
+<pre class="hljs"><code><div>docker restart a5266ecae48b
+a5266ecae48b
+</div></code></pre>
+<p>Now, check if <code>busybox</code> container is running or not.</p>
+<pre class="hljs"><code><div>docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED          STATUS              PORTS     NAMES
+a5266ecae48b   busybox   <span class="hljs-string">"sh"</span>      32 minutes ago   Up About a minute             festive_buck
+</div></code></pre>
+<h3 id="naming-docker-container">Naming Docker container</h3>
+<p>You can name a container using the <code>docker run</code> command. This command creates a new container and names it using the name you specify.</p>
+<p>Let us name <code>busybox</code> container as <code>busybox-container</code>.</p>
+<pre class="hljs"><code><div>docker run -it --name busybox-container busybox sh
+5de293fa722d
+</div></code></pre>
+<p>Now, check if <code>busybox-container</code> is running or not.</p>
+<pre class="hljs"><code><div>docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED          STATUS              PORTS     NAMES
+5de293fa722d   busybox   <span class="hljs-string">"sh"</span>      7 seconds ago    Up 5 seconds                  busybox-container
+</div></code></pre>
+<p>Do notice that the <code>NAMES</code> column shows that our container is named <code>busybox-container</code> that we gave during <code>docker run</code> command. If new do not provide <code>--name &lt;container name&gt;</code> then docker will automatically generate for us like <code>festive_buck</code> on our earler docker container.</p>
+<hr>
+<h3 id="additioanal-labs-and-refrences">Additioanal labs and refrences</h3>
+<ul>
+<li><a href="https://www.docker.com/">Docker</a></li>
+<li><a href="https://hub.docker.com/">Docker Hub</a></li>
+<li><a href="https://docs.docker.com/">Docker Docs</a></li>
+<li><a href="https://training.play-with-docker.com/beginner-linux/">https://training.play-with-docker.com/beginner-linux/</a></li>
+</ul>
+<hr>
+
+</body>
+</html>
