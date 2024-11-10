@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>docker_monitoring_dashboard_lab.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="installing-docker-container-monitoring">Installing Docker container monitoring</h1>
+<p>Installing Docker container monitoring is easy with Docker Compose. You can create the monitoring “stack” in Docker Compose and then deploy this to your container hosts.</p>
+<p>Note the following Docker Compose code that will stand up your container monitoring system:</p>
+<pre class="hljs"><code><div><span class="hljs-attr">version:</span> <span class="hljs-string">"3.8"</span>
+
+<span class="hljs-attr">services:</span>
+  <span class="hljs-attr">grafana:</span>
+    <span class="hljs-attr">user:</span> <span class="hljs-string">"1001"</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">grafana/grafana</span>
+    <span class="hljs-attr">container_name:</span> <span class="hljs-string">grafana</span>
+    <span class="hljs-attr">restart:</span> <span class="hljs-string">always</span>
+    <span class="hljs-attr">ports:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-number">3000</span><span class="hljs-string">:3000</span>
+    <span class="hljs-attr">environment:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">GF_PANELS_DISABLE_SANITIZE_HTML=true</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">GF_SECURITY_ADMIN_USER=${GRAFANA_USER}</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">GF_USERS_ALLOW_SIGN_UP=false</span>
+    <span class="hljs-attr">networks:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">monitoring</span>
+    <span class="hljs-attr">volumes:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">"/home/linuxadmin/homelabservices/grafana/grafana-volume:/var/lib/grafana"</span>
+
+  <span class="hljs-attr">prometheus:</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">prom/prometheus:latest</span>
+    <span class="hljs-attr">container_name:</span> <span class="hljs-string">prometheus</span>
+    <span class="hljs-attr">restart:</span> <span class="hljs-string">always</span>
+    <span class="hljs-attr">user:</span> <span class="hljs-string">"1001"</span>
+    <span class="hljs-attr">ports:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-number">9090</span><span class="hljs-string">:9090</span>
+    <span class="hljs-attr">environment:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">PUID=1001</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">PGID=1001</span>
+    <span class="hljs-attr">command:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">'--config.file=/etc/prometheus/prometheus.yml'</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">'--log.level=error'</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">'--storage.tsdb.path=/prometheus'</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">'--storage.tsdb.retention.time=7d'</span>
+    <span class="hljs-attr">volumes:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">bind</span>
+        <span class="hljs-attr">source:</span> <span class="hljs-string">"/home/linuxadmin/homelabservices/prometheus"</span>
+        <span class="hljs-attr">target:</span> <span class="hljs-string">/prometheus</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">bind</span>
+        <span class="hljs-attr">source:</span> <span class="hljs-string">"/home/linuxadmin/homelabservices/prometheus/prometheus.yml"</span>
+        <span class="hljs-attr">target:</span> <span class="hljs-string">/etc/prometheus/prometheus.yml</span>
+    <span class="hljs-attr">networks:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">monitoring</span>
+
+  <span class="hljs-attr">cadvisor:</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">gcr.io/cadvisor/cadvisor:v0.47.0</span>
+    <span class="hljs-attr">container_name:</span> <span class="hljs-string">cadvisor</span>
+    <span class="hljs-attr">restart:</span> <span class="hljs-string">always</span>
+    <span class="hljs-attr">command:</span> <span class="hljs-string">-logtostderr</span> <span class="hljs-string">-docker_only</span>
+    <span class="hljs-attr">volumes:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">bind</span>
+        <span class="hljs-attr">source:</span> <span class="hljs-string">/</span>
+        <span class="hljs-attr">target:</span> <span class="hljs-string">/rootfs</span>
+        <span class="hljs-attr">read_only:</span> <span class="hljs-literal">true</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">bind</span>
+        <span class="hljs-attr">source:</span> <span class="hljs-string">/var/run</span>
+        <span class="hljs-attr">target:</span> <span class="hljs-string">/var/run</span>
+        <span class="hljs-attr">read_only:</span> <span class="hljs-literal">true</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">bind</span>
+        <span class="hljs-attr">source:</span> <span class="hljs-string">/sys</span>
+        <span class="hljs-attr">target:</span> <span class="hljs-string">/sys</span>
+        <span class="hljs-attr">read_only:</span> <span class="hljs-literal">true</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">bind</span>
+        <span class="hljs-attr">source:</span> <span class="hljs-string">/var/lib/docker</span>
+        <span class="hljs-attr">target:</span> <span class="hljs-string">/var/lib/docker</span>
+        <span class="hljs-attr">read_only:</span> <span class="hljs-literal">true</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">bind</span>
+        <span class="hljs-attr">source:</span> <span class="hljs-string">/dev/disk</span>
+        <span class="hljs-attr">target:</span> <span class="hljs-string">/dev/disk</span>
+        <span class="hljs-attr">read_only:</span> <span class="hljs-literal">true</span>
+    <span class="hljs-attr">networks:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">monitoring</span>
+
+  <span class="hljs-attr">node-exporter:</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">prom/node-exporter:v1.5.0</span>
+    <span class="hljs-attr">container_name:</span> <span class="hljs-string">nodeexporter</span>
+    <span class="hljs-attr">restart:</span> <span class="hljs-string">always</span>
+    <span class="hljs-attr">command:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">'--path.sysfs=/host/sys'</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">'--path.procfs=/host/proc'</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">'--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">'--no-collector.ipvs'</span>
+    <span class="hljs-attr">volumes:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">bind</span>
+        <span class="hljs-attr">source:</span> <span class="hljs-string">/</span>
+        <span class="hljs-attr">target:</span> <span class="hljs-string">/rootfs</span>
+        <span class="hljs-attr">read_only:</span> <span class="hljs-literal">true</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">bind</span>
+        <span class="hljs-attr">source:</span> <span class="hljs-string">/proc</span>
+        <span class="hljs-attr">target:</span> <span class="hljs-string">/host/proc</span>
+        <span class="hljs-attr">read_only:</span> <span class="hljs-literal">true</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">bind</span>
+        <span class="hljs-attr">source:</span> <span class="hljs-string">/sys</span>
+        <span class="hljs-attr">target:</span> <span class="hljs-string">/host/sys</span>
+        <span class="hljs-attr">read_only:</span> <span class="hljs-literal">true</span>
+    <span class="hljs-attr">networks:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">monitoring</span>
+
+<span class="hljs-attr">volumes:</span>
+  <span class="hljs-attr">prometheus-data:</span>
+    <span class="hljs-attr">driver_opts:</span>
+      <span class="hljs-attr">type:</span> <span class="hljs-string">none</span>
+      <span class="hljs-attr">o:</span> <span class="hljs-string">bind</span>
+      <span class="hljs-attr">device:</span> <span class="hljs-string">"/home/linuxadmin/homelabservices/prometheus"</span>
+
+<span class="hljs-attr">networks:</span>
+  <span class="hljs-attr">monitoring:</span>
+    <span class="hljs-attr">driver:</span> <span class="hljs-string">bridge</span>
+</div></code></pre>
+<p>You will need to create the prometheus.yml file for configuring Prometheus. Below is an example of what this file would look like using my host addresses:</p>
+<pre class="hljs"><code><div><span class="hljs-attr">global:</span>
+  <span class="hljs-attr">scrape_interval:</span> <span class="hljs-string">15s</span>  <span class="hljs-comment"># How frequently to scrape targets</span>
+  <span class="hljs-attr">evaluation_interval:</span> <span class="hljs-string">15s</span>  <span class="hljs-comment"># How frequently to evaluate rules</span>
+
+<span class="hljs-attr">scrape_configs:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">job_name:</span> <span class="hljs-string">'docker_swarm'</span>
+    <span class="hljs-attr">static_configs:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">targets:</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-number">10.1</span><span class="hljs-number">.149</span><span class="hljs-number">.59</span><span class="hljs-string">:9100</span>  <span class="hljs-comment"># Node Exporter running on Swarm node 1</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-number">10.1</span><span class="hljs-number">.149</span><span class="hljs-number">.60</span><span class="hljs-string">:9100</span>  <span class="hljs-comment"># Node Exporter running on Swarm node 2</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-number">10.1</span><span class="hljs-number">.149</span><span class="hljs-number">.61</span><span class="hljs-string">:9100</span>  <span class="hljs-comment"># Node Exporter running on Swarm node 3</span>
+
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">job_name:</span> <span class="hljs-string">'cadvisor'</span>
+    <span class="hljs-attr">static_configs:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">targets:</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-number">10.1</span><span class="hljs-number">.149</span><span class="hljs-number">.59</span><span class="hljs-string">:8080</span>  <span class="hljs-comment"># cAdvisor running on Swarm node 1</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-number">10.1</span><span class="hljs-number">.149</span><span class="hljs-number">.60</span><span class="hljs-string">:8080</span>  <span class="hljs-comment"># cAdvisor running on Swarm node 2</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-number">10.1</span><span class="hljs-number">.149</span><span class="hljs-number">.61</span><span class="hljs-string">:8080</span>  <span class="hljs-comment"># cAdvisor running on Swarm node 3</span>
+</div></code></pre>
+<p>Once you have your prometheus configuration file in place and directory structure for your persistent data configured, you can bring up the stack with:</p>
+<pre class="hljs"><code><div>docker compose up -d
+</div></code></pre>
+<p>This Docker Compose code configures a monitoring stack with <strong><code>Grafana</code></strong>, <strong><code>Prometheus</code></strong>, <strong><code>cAdvisor</code></strong>, and <strong><code>Node Exporter</code></strong> running in Docker. Each service is configured to run within a shared overlay network called monitoring.</p>
+<ol>
+<li><strong>Grafana</strong>: It uses the official Grafana image and runs on port 3000. The configuration includes environment variables to manage admin credentials and disable HTML sanitization for panels. Data persistence is mounted to the /opt/grafana/grafana-volume directory (which is a glusterfs volume on my container hosts) on the host to /var/lib/grafana inside the container. The service manager nodes with a specific monitoring label. But this is optional configuration that you can remove.</li>
+<li><strong>Prometheus</strong>: This service handles collecting metrics using the YAML file (prometheus.yml), which an example is shown above. It uses bind mounts for persistent data in /opt/prometheus on the host. The storage retention is set to 7 days, and it runs with a non-root user (1001) for better security. The service restarts on failure and runs with a single replica.</li>
+<li><strong>cAdvisor</strong>: cAdvisor provides container-level resource monitoring and is deployed in global mode, which means one instance will run on every node. It is set up with strict memory limits (128MB) and binds system directories for monitoring the docker daemon, such as the /var/lib/docker and /sysdirectories. All volumes are mounted as read-only to minimize security risks.</li>
+<li><strong>Node Exporter</strong>: This gets hardware and OS metrics, including CPU, memory, and disk usage, from the host. It runs in global mode like cAdvisor, to place a monitoring agent on each node. System directories like /proc and /sys are bind-mounted read-only to gather metrics.
+The overlay network named monitoring is used for the stack in the Swarm setup (orchestration tools). However, you can change this to any network you have configured for your containers in your environment. Also, volume mounts are used for storage.</li>
+</ol>
+<h2 id="adding-the-data-source-in-grafana">Adding the data source in Grafana</h2>
+<p>Now, we will still have a bit of configuration to do, but this is straightforward. First, we need to login to Grafana, and add the Prometheus data source.</p>
+<p>Search for Prometheus in the data source catalog of services in Grafana and then in the configuration settings, point the Prometheus server URL to the URL of your internal container. This will be HTTP by default. You can use something like Nginx Proxy Manager to add SSL if you want.</p>
+<p><img src="images/setting-up-connection-to-prometheus-in-grafana.png" alt="Setting up connection to prometheus in grafana">
+<strong>Setting up connection to prometheus in grafana</strong></p>
+<p>At the bottom of the configuration page, there is a Save &amp; test button. Click this to test out the connection to Prometheus. You should get the green box that pops up and says “successfully queried the Prometheus API”.</p>
+<p><img src="images/save-and-test-the-connection-to-prometheus.png" alt="Save and test the connection to prometheus">
+<strong>Save and test the connection to prometheus</strong></p>
+<p>Once you do that, you should be able to Explore data at the top right:</p>
+<p><img src="images/explore-data-in-prometheus-for-docker-container-monitoring.png" alt="Explore data in prometheus for docker container monitoring">
+<strong>Explore data in prometheus for docker container monitoring</strong></p>
+<p>As you can see here, we are pointed to the Prometheus data source and when you click the drop down for metric, you should see the metrics collected by cadvisor, and node exporter, etc. If you do see the metrics collected, you know the data is successfully being queried by Prometheus.</p>
+<p><img src="images/viewing-docker-container-monitoring-metrics.png" alt="Viewing docker container monitoring metrics">
+<strong>Viewing docker container monitoring metrics</strong></p>
+<h1 id="importing-grafana-community-dashboards">Importing Grafana community dashboards</h1>
+<p>Now, we can start importing Grafana community dashboards to visualize this data. In Grafana, navigate to Dashboards &gt; New &gt; Import.</p>
+<p><img src="images/importing-a-grafana-community-dashboard.png" alt="Importing a grafana community dashboard">
+<strong>Importing a grafana community dashboard</strong></p>
+<p>This will launch the Import Dashboard dialog. Here we can paste in a community dashboard ID and then click Load.</p>
+<p><img src="images/enter-the-grafana-dashboard-id-and-load-the-dashboard.png" alt="Enter the grafana dashboard id and load the dashboard">
+<strong>Enter the grafana dashboard id and load the dashboard</strong></p>
+<p>Here I pasted in the Container in Docker and System Monitoring dashboard that is freely available on the Grafana community dashboard site and is ID: 13112. Once you paste in the ID and hit Load, you will select Prometheus from the Prometheus drop down or whatever you named your Prometheus instance that you just setup.</p>
+<p><img src="images/point-to-your-prometheus-instance.png" alt="Point to your prometheus instance">
+<strong>Point to your prometheus instance</strong></p>
+<p>Great information! It combines both Node Exporter information and cAdvisor to give an overall view of both your container host and the container metrics.</p>
+<p><img src="images/viewing-a-cadvisor-metrics-dashboard.png" alt="Viewing a cadvisor metrics dashboard">
+<strong>Viewing a cadvisor metrics dashboard</strong></p>
+<p>You can also select which host you want to drill into:</p>
+<p><img src="images/selecting-a-specific-host-for-node-exporter-metrics.png" alt="Selecting a specific host for node exporter metrics">
+<strong>Selecting a specific host for node exporter metrics</strong></p>
+<p>This one is cAdvisor and Docker insights:</p>
+<p><img src="images/cadvisor-and-docker-insights-for-docker-container-monitoring.png" alt="Cadvisor and docker insights for docker container monitoring">
+<strong>Cadvisor and docker insights for docker container monitoring</strong></p>
+
+</body>
+</html>

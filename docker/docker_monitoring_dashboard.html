@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>agenda.md</title>
+<title>docker_monitoring_dashboard.md</title>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 
 <style>
@@ -365,188 +365,85 @@ code {
           : 'default'
     });
   </script>
-<h1 id="containerization-workshop"><strong>Containerization Workshop</strong></h1>
-<p><a href="index">Main Page</a></p>
-<h2 id="workshop-agenda"><strong>Workshop: Agenda</strong></h2>
-<h3 id="time-schedule"><strong>Time Schedule</strong></h3>
-<table>
-<thead>
-<tr>
-<th>Schedule</th>
-<th>Time</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Session 1</td>
-<td>09:00 - 10:30</td>
-</tr>
-<tr>
-<td>Break</td>
-<td>10:30 - 11:30</td>
-</tr>
-<tr>
-<td>Session 2</td>
-<td>11:00 - 12:30</td>
-</tr>
-<tr>
-<td>Lunch</td>
-<td>12:30 - 13:30</td>
-</tr>
-<tr>
-<td>Session 3</td>
-<td>13:30 - 15:00</td>
-</tr>
-<tr>
-<td>Break</td>
-<td>15:00 - 15:30</td>
-</tr>
-<tr>
-<td>Session 4</td>
-<td>15:30 - 17:00</td>
-</tr>
-</tbody>
-</table>
-<h3 id="instructors"><strong>Instructors</strong></h3>
-<table>
-<thead>
-<tr>
-<th>FL</th>
-<th>Name</th>
-<th>Email</th>
-<th>Organization</th>
-<th>Country</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>CS</td>
-<td>Chatur Ratna Shakya</td>
-<td>chatur(at)pch(dot)net</td>
-<td><a href="https://www.pch.net">PCH</a></td>
-<td>Nepal</td>
-</tr>
-</tbody>
-</table>
-<h3 id="sessions"><strong>Sessions</strong></h3>
-<table>
-<thead>
-<tr>
-<th>DAY 1</th>
-<th>Topic</th>
-<th>Inst</th>
-<th>Presentations</th>
-<th>Exercises</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Session 1.1.1</td>
-<td>Welcome</td>
-<td>CS</td>
-<td><a href="welcome/welcome.pdf">PDF</a></td>
-<td></td>
-</tr>
-<tr>
-<td>Session 1.1.2</td>
-<td>Introduction to Containerization</td>
-<td>CS</td>
-<td><a href="welcome/containerization.pdf">PDF</a></td>
-<td></td>
-</tr>
-<tr>
-<td>Session 1.2</td>
-<td>Getting Started with Docker</td>
-<td>CS</td>
-<td><a href="docker/docker.pdf">PDF</a></td>
-<td></td>
-</tr>
-<tr>
-<td>Session 1.3</td>
-<td>Lab</td>
-<td>All</td>
-<td></td>
-<td>1. Install Docker Desktop <a href="docker/Install_docker_desktop">HTML</a></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td>2. Install Docker Engine <a href="docker/install_docker_engine_debian">HTML</a></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td>3. Playing with Docker <a href="docker/playing_with_docker">HTML</a></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td>4. Doing more with Docker Image <a href="docker/doing_more_with_docker_image">HTML</a></td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr>
-<th>DAY 2</th>
-<th>Topic</th>
-<th>Inst</th>
-<th>Presentations</th>
-<th>Exercises</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Session 2.1</td>
-<td>Docker Networking</td>
-<td>CS</td>
-<td><a href="docker/docker_networking.pdf">PDF</a></td>
-<td>Lab: Docker Networking Hands-on Lab <a href="docker/docker_networking_lab">HTML</a></td>
-</tr>
-<tr>
-<td>Session 2.2</td>
-<td>Docker Volumes</td>
-<td>CS</td>
-<td><a href="docker/docker_volumes.pdf">PDF</a></td>
-<td>Lab: Hands on with Docker Volumes <a href="docker/docker_volumes_lab">HTML</a></td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr>
-<th>DAY 3</th>
-<th>Topic</th>
-<th>Inst</th>
-<th>Presentations</th>
-<th>Exercises</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Session 3.1</td>
-<td>Docker Compose</td>
-<td>CS</td>
-<td><a href="docker/docker_compose.pdf">PDF</a></td>
-<td>Lab: Hands on with Docker Compose <a href="docker/docker_compose_lab">HTML</a></td>
-</tr>
-<tr>
-<td>Session 3.2</td>
-<td>Docker Monitoring Dashboard</td>
-<td>CS</td>
-<td><a href="docker/docker_monitoring_dashboard.pdf">PDF</a></td>
-<td>Lab: Monitoring Dashboard with cAdvisor, Node Exporter, Prometheus and Grafana <a href="docker/docker_monitoring_dashobard_lab">HTML</a></td>
-</tr>
-</tbody>
-</table>
-<h3 id="additional-information"><strong>Additional Information</strong></h3>
-<hr>
+<h1 id="docker-container-monitoring-dashboards">Docker Container Monitoring Dashboards</h1>
+<p>Docker container monitoring dashboards provide a visual representation of the performance and health of Docker containers. These dashboards can be used to monitor container metrics, such as CPU usage, memory usage, and network
+traffic, as well as container logs and events.</p>
+<p>Docker has a built-in stats command that makes it simple to see the amount of resources your containers are using. Just drop $ docker stats in your CLI and you’ll get a read out of the CPU, memory, network, and disk usage for all your running containers.</p>
+<p>But this command only gives you a current moment in time. What if you wanted to see the evolution of the resources over time? Or see how much CPU and memory a Docker Compose project is using? Or sort containers by the most CPU-intensive, then filter by CPU usage over 80%?</p>
+<h2 id="why-monitor-docker-containers">Why monitor Docker containers?</h2>
+<p>Well, like other infrastructure monitoring can help to give visibility to issues, problems, or other metrics that need to be addressed as part of your application performance monitoring. Docker monitoring tools allow you to monitor docker and key metrics that shed light on anomaly detection, performance issues, stability issues, or just overall sanity checks of your containerized applications to make sure everything is running as expected.</p>
+<h3 id="performance-monitoring">Performance Monitoring</h3>
+<ul>
+<li>Monitor container performance metrics, such as CPU usage, memory usage, and network I/O</li>
+<li>Using the info to identify bottlenecks and improve container performance</li>
+<li>Use tools like Prometheus and Grafana to collect and visualize performance metrics.</li>
+</ul>
+<h3 id="security-monitoring">Security Monitoring</h3>
+<ul>
+<li>Monitor container security metrics, such as network traffic and system processes</li>
+<li>Help identify potential security threats and vulnerabilities</li>
+</ul>
+<h3 id="docker-monitoring-tools">Docker Monitoring Tools</h3>
+<p>There are several tools available for monitoring Docker containers, including:</p>
+<ul>
+<li><strong>Docker Stats</strong>: A command-line tool that provides real-time statistics about running containers.</li>
+</ul>
+<p>Using Docker’s stats command, you get a live view of the resources used by your containers. Every running container can be analyzed using this tool to determine its CPU, memory, network, and disk utilization.</p>
+<p>To use the command, open a terminal and run the <code>docker stats</code> command:</p>
+<pre class="hljs"><code><div>$ docker stats
+CONTAINER CPU % MEM USAGE / LIMIT MEM % NET I/O BLOCK I/O
+ 
+redis1 0.07% 796 KB / 64 MB 1.21% 788 B / 648 B 3.568 MB / 512 KB
+ 
+redis2 0.07% 2.746 MB / 64 MB 4.29% 1.266 KB / 648 B 12.4 MB / 0 B
+</div></code></pre>
+<p>You can find out more about this command in the Docker documentation.</p>
+<p>Docker stats is a useful command that provides information about the resources your containers are using at a given point in time. But that’s all it does. Before this extension, if you wanted to string together the information over a period of time, you were looking at a fairly manual process of pings and data consolidation.</p>
+<ul>
+<li>
+<p><strong>Resource Usage extension</strong>:</p>
+<ul>
+<li>Provides detailed metrics about container resource usage.</li>
+<li>Can be used to monitor container performance and identify resource bottlenecks.</li>
+<li>Can be used to monitor container logs and events.</li>
+</ul>
+</li>
+<li>
+<p><strong>cAdvisor</strong>: cAdvisor (Container Advisor) is a tool that provides real-time monitoring and a view of resource usage and performance metrics for containers. It helps you to see CPU, memory, network, and disk statistics related to your containers.</p>
+</li>
+<li>
+<p><strong>Node Exporter</strong>: Node Exporter is an agent for exposing system-level metrics about the Docker container host. It gives you metrics such as CPU, memory, disk, and network usage for your host. It can export these statistics to Prometheus for monitoring physical and virtualized servers.</p>
+</li>
+<li>
+<p><strong>Prometheus</strong>: Prometheus is a monitoring and alerting tool that collects metrics from systems and services and then it stores them in a time-series database. You can then set up alerts based on those metrics. Data can be scraped from exporters like Node Exporter and cAdvisor and sent to Grafana or some other log management solution</p>
+</li>
+<li>
+<p><strong>Grafana</strong>: Grafana is a visualization tool that easily allows you to have visually appealing dashboards and it integrates with data sources like Prometheus. The dashboards can provide a view of real-time data for monitoring metrics. You can customize the look of graphs and visualizations for analyzing performance metrics and tracking performance issues</p>
+</li>
+</ul>
+<h3 id="docker-monitoring-with-prometheus-and-grafana">Docker Monitoring with Prometheus and Grafana</h3>
+<p>Prometheus is an open-source monitoring system that can be used to monitor Docker containers. Grafana is
+a visualization tool that can be used to create dashboards for monitoring Docker containers.
+Here is an example of how to use Prometheus and Grafana to monitor Docker containers:</p>
+<ol>
+<li>Install Prometheus and Grafana on a server.</li>
+<li>Configure Prometheus to scrape metrics from Docker containers.</li>
+<li>Create a dashboard in Grafana to visualize the metrics collected by Prometheus.</li>
+<li>Use the dashboard to monitor container metrics and identify performance issues.</li>
+</ol>
+<h3 id="docker-container-monitoring-with-cadvisor-node-exporter-prometheus-and-grafana">Docker Container Monitoring with cAdvisor Node Exporter Prometheus and Grafana</h3>
+<p>cAdvisor is a container resource usage and performance monitoring agent that can be used to monitor Docker
+containers. The Node Exporter is a Prometheus exporter that can be used to collect metrics from cAdvisor
+about container resource usage. Here is an example of how to use cAdvisor, Node Exporter,
+Prometheus, and Grafana to monitor Docker containers:</p>
+<ol>
+<li>Install cAdvisor and Node Exporter on a server.</li>
+<li>Configure cAdvisor to collect metrics about container resource usage.</li>
+<li>Configure Node Exporter to collect metrics from cAdvisor.</li>
+<li>Configure Prometheus to scrape metrics from Node Exporter.</li>
+<li>Create a dashboard in Grafana to visualize the metrics collected by Prometheus.</li>
+<li>Use the dashboard to monitor container metrics and identify performance issues.</li>
+</ol>
 
 </body>
 </html>
