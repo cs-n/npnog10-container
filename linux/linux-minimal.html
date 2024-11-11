@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>linux-minimal.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<!-- Local Page style -->
+<style scoped>
+h1 {
+  color: #4e8fc7;
+}
+h2 {
+    color: #455a64;
+    color: #f97c28;
+}
+img {
+    float: left;
+    margin-left: -40px;
+}
+pre {
+    margin: -33px 50px 0px;
+    width: 810px;
+    float: right;
+}pre > code {
+    background-color: #f8f8f8;
+    color: #4d4d4c;
+}
+</style>
+<!--
+_class: lead
+_footer: '' 
+_paginate: false
+-->
+<!-- End Local Page style-->
+<!-- Slide starts -->
+<br />
+<br />
+<br />
+<h1 id="fit----introduction-to-containerization"><!-- fit --> Introduction to Containerization</h1>
+<br />
+<h2 id="linux-basics">Linux Basics</h2>
+<br />
+<h3 id="npnog-10">npNOG 10</h3>
+<p>Nov 25 - 28, 2024</p>
+<p><a href="http://creativecommons.org/licenses/by-nc/4.0/"><img src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" alt="Creative Commons License"></a></p>
+<pre class="hljs"><code><div>This material is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License (http://creativecommons.org/licenses/by-nc/4.0/)
+</div></code></pre>
+<hr>
+<style scoped>
+img {
+    float: right;
+    width: 30%;
+}
+</style>
+<h2 id="our-chosen-platform">Our chosen platform</h2>
+<p><img src="../images/ubuntu_black-orange_st_hex.png" alt="Ubuntu Logo"></p>
+<ul>
+<li>Ubuntu Linux
+<ul>
+<li>LTS = Long Term Support</li>
+<li>no GUI, we administer using ssh</li>
+<li>Ubuntu is Debian underneath</li>
+</ul>
+</li>
+<li>There are other platforms you could use:
+<ul>
+<li>CentOS / RedHat, FreeBSD, …</li>
+</ul>
+</li>
+<li>This isn’t a UNIX admin course, but some knowledge is necessary:
+<ul>
+<li>Worksheets are mostly step-by-step</li>
+<li>Please help each other or ask us for help</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="you-need-to-be-able-to">You need to be able to…</h2>
+<ul>
+<li>Be <code>root</code> when necessary
+<em>$ sudo &lt;cmd&gt;</em></li>
+<li>Install packages
+$ <em>sudo apt-get install &lt;pkg&gt;</em></li>
+<li>Edit files
+$ <em>sudo nano /etc/mailname</em>
+$ <em>sudo vi /etc/mailname</em></li>
+<li>Check for the process &quot;apache&quot;
+$ <em>ps auxwww | grep apache</em></li>
+<li>Start/Stop/Status of services
+$ <em>sudo systemctl [start|stop|status] &lt;NAME&gt;</em></li>
+</ul>
+<hr>
+<h2 id="nano-editor">nano editor</h2>
+<ul>
+<li>Ctrl-x y “n” quit without saving</li>
+<li>Ctrl-x y “y” to quit and save</li>
+<li>Ctrl-g for help</li>
+<li>Ctrl-w for searching</li>
+<li>Cursors work as you expect</li>
+</ul>
+<hr>
+<h2 id="vi-editor">vi editor</h2>
+<ul>
+<li>The default editor for all UNIX and Linux distributions</li>
+<li>Can be difficult to use</li>
+<li>If you know it and prefer to use vi please do</li>
+<li>We provide a PDF reference in the materials</li>
+</ul>
+<hr>
+<h2 id="other-tools">Other tools</h2>
+<ul>
+<li>Terminate foreground program:
+<ul>
+<li>ctrl-c</li>
+</ul>
+</li>
+<li>Browse the filesystem:
+<ul>
+<li>cd /etc</li>
+<li>ls</li>
+<li>ls -l</li>
+</ul>
+</li>
+<li>Delete and rename files
+<ul>
+<li>mv file file.bak</li>
+<li>rm file.bak</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="viewing-files">Viewing files</h2>
+<p>Sometimes files are viewed through a pager program (“more”, “less”, “cat”). Example:</p>
+<ul>
+<li>man sudo</li>
+<li>Space bar for next page</li>
+<li>“b” to go backwards</li>
+<li>“/” and a pattern (/text) to search</li>
+<li>“n” to find next match</li>
+<li>“N” to find previous match</li>
+<li>“q” to quit</li>
+</ul>
+<hr>
+<style scoped>
+ol, ul {
+    margin-top: 0;
+    font-size: 85%;
+}
+</style>
+<h2 id="using-ssh">Using ssh</h2>
+<p><em><strong>Configuring and using ssh incorrectly will guarantee a security compromise…</strong></em></p>
+<p>The wrong way:</p>
+<ul>
+<li>Using simple passwords for users</li>
+<li>Allowing root to login with a password</li>
+<li>In reality – allowing any login with a password</li>
+</ul>
+<p>The right way:</p>
+<ul>
+<li>Disable all password access</li>
+<li>Disable root access with password</li>
+<li>Some disable root access completely</li>
+</ul>
+<hr>
+<h2 id="using-ssh-our-way">Using ssh: our way</h2>
+<p>For class we will compromise.</p>
+<p>Our way:
+– Allow user login with improved passwords
+– Allow root login with ssh keys only</p>
+<p>Understanding password strength, see next
+slide…*</p>
+<br />
+<p>* <a href="https://xkcd.com/936/">https://xkcd.com/936/</a></p>
+<hr>
+<style scoped>
+img {
+    width: 102%;
+    display: block;
+    margin: -50px auto;
+}
+</style>
+<!--## Password Strength-->
+<p><img src="https://imgs.xkcd.com/comics/password_strength.png" alt=" Password Strength "></p>
+<hr>
+<style scoped>
+img {
+    width: 64%;
+    display: block;
+    margin: -40px auto;
+}
+</style>
+<h2 id="no-passwords-are-better">No Passwords are better</h2>
+<p><img src="https://scriptcrunch.com/wp-content/uploads/2016/12/public-key-auth-workflow.png" alt=""></p>
+<hr>
+<style scoped>
+ol, ul {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 85%;
+}
+p {
+    margin: 10px auto 10px;
+}
+</style>
+<h2 id="improve-password-for-lab-user">Improve password for <code>lab</code> user</h2>
+<p><strong>Method 1</strong> (moderately strong)</p>
+<ul>
+<li>8 characters or more</li>
+<li>Not a word in any language</li>
+<li>A mix of numbers, upper and lower case</li>
+<li>Include some punctuation characters</li>
+</ul>
+<p><strong>Method 2</strong> (stronger)</p>
+<ul>
+<li>Use four words of 6 characters, or more</li>
+<li>Use unrelated words</li>
+</ul>
+<p><strong>Examples</strong> (do not use these!)</p>
+<ol>
+<li>Tr0ub4dor&amp;3</li>
+<li>CorrectHorseBatteryStaple</li>
+</ol>
+<hr>
+<h2 id="using-ssh-to-connect-to-your-vm">Using ssh to connect to your VM</h2>
+<ul>
+<li>Login to your virtual machine using ssh
+<ul>
+<li>On Windows use putty.exe</li>
+<li>Connect to srvX.lab.npnog.org.np as user sysadm</li>
+<li>We’ll do that now...</li>
+</ul>
+</li>
+<li>Accept Public Key when prompted</li>
+<li>Windows users can download putty from <a href="http://www.lab.npnog.org.np">http://www.lab.npnog.org.np</a> and connect</li>
+<li>Instructors will now assist everyone to connect</li>
+</ul>
+<hr>
+<h2 id="change-lab-user-password">Change <code>lab</code> user password</h2>
+<p>Logged in as user <code>lab</code> do:</p>
+<pre class="hljs"><code><div>$ passwd
+changing password <span class="hljs-keyword">for</span> lab.
+(Current) UNIX password:  &lt;enter current password&gt;
+Enter new UNIX password: &lt;enter new password&gt;
+Retype new UNIX password: &lt;confirm new password&gt;
+</div></code></pre>
+<p>If everything goes well you will see the message:</p>
+<pre class="hljs"><code><div>passwd: password updated successfully
+</div></code></pre>
+<hr>
+<h2 id="finish-initial-vm-configuration">Finish initial VM configuration</h2>
+<p>Now we’ll do our initial VM configuration, including:</p>
+<ul>
+<li>Software package database update</li>
+<li>nano editor software installation</li>
+<li>Install network time protocol service and update time</li>
+<li>Practice using logs</li>
+<li>Practice using man</li>
+<li>Practice editing files</li>
+</ul>
+<hr>
+<!--
+_class: lead
+_paginate: false
+-->
+<h2 id="fit---question"><!--fit--> <img class="emoji" alt="question" src="data:image/png;base64,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" /></h2>
+<!-- Slide end -->
+
+</body>
+</html>
