@@ -367,12 +367,18 @@ code {
   </script>
 <h1 id="installing-docker-container-monitoring">Installing Docker container monitoring</h1>
 <p>Installing Docker container monitoring is easy with Docker Compose. You can create the monitoring “stack” in Docker Compose and then deploy this to your container hosts.</p>
-<p>Note the following Docker Compose code that will stand up your container monitoring system:</p>
+<p>Note the following Docker Compose code that will build up your container monitoring system:</p>
+<pre class="hljs"><code><div>sudo -i
+<span class="hljs-built_in">cd</span> /srv/
+mkdir monitoring
+<span class="hljs-built_in">cd</span> monitoring
+
+vi compose.yaml
+</div></code></pre>
 <pre class="hljs"><code><div><span class="hljs-attr">version:</span> <span class="hljs-string">"3.8"</span>
 
 <span class="hljs-attr">services:</span>
   <span class="hljs-attr">grafana:</span>
-    <span class="hljs-attr">user:</span> <span class="hljs-string">"1001"</span>
     <span class="hljs-attr">image:</span> <span class="hljs-string">grafana/grafana</span>
     <span class="hljs-attr">container_name:</span> <span class="hljs-string">grafana</span>
     <span class="hljs-attr">restart:</span> <span class="hljs-string">always</span>
@@ -380,24 +386,20 @@ code {
       <span class="hljs-bullet">-</span> <span class="hljs-number">3000</span><span class="hljs-string">:3000</span>
     <span class="hljs-attr">environment:</span>
       <span class="hljs-bullet">-</span> <span class="hljs-string">GF_PANELS_DISABLE_SANITIZE_HTML=true</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">GF_SECURITY_ADMIN_USER=${GRAFANA_USER}</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">GF_SECURITY_ADMIN_USER=admin</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">GF_SECURITY_ADMIN_PASSWORD=npnog10</span>
       <span class="hljs-bullet">-</span> <span class="hljs-string">GF_USERS_ALLOW_SIGN_UP=false</span>
     <span class="hljs-attr">networks:</span>
       <span class="hljs-bullet">-</span> <span class="hljs-string">monitoring</span>
     <span class="hljs-attr">volumes:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"/home/linuxadmin/homelabservices/grafana/grafana-volume:/var/lib/grafana"</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">"grafana-data:/var/lib/grafana"</span>
 
   <span class="hljs-attr">prometheus:</span>
     <span class="hljs-attr">image:</span> <span class="hljs-string">prom/prometheus:latest</span>
     <span class="hljs-attr">container_name:</span> <span class="hljs-string">prometheus</span>
     <span class="hljs-attr">restart:</span> <span class="hljs-string">always</span>
-    <span class="hljs-attr">user:</span> <span class="hljs-string">"1001"</span>
     <span class="hljs-attr">ports:</span>
       <span class="hljs-bullet">-</span> <span class="hljs-number">9090</span><span class="hljs-string">:9090</span>
-    <span class="hljs-attr">environment:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">PUID=1001</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">PGID=1001</span>
     <span class="hljs-attr">command:</span>
       <span class="hljs-bullet">-</span> <span class="hljs-string">'--config.file=/etc/prometheus/prometheus.yml'</span>
       <span class="hljs-bullet">-</span> <span class="hljs-string">'--log.level=error'</span>
@@ -405,11 +407,9 @@ code {
       <span class="hljs-bullet">-</span> <span class="hljs-string">'--storage.tsdb.retention.time=7d'</span>
     <span class="hljs-attr">volumes:</span>
       <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">bind</span>
-        <span class="hljs-attr">source:</span> <span class="hljs-string">"/home/linuxadmin/homelabservices/prometheus"</span>
-        <span class="hljs-attr">target:</span> <span class="hljs-string">/prometheus</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">bind</span>
-        <span class="hljs-attr">source:</span> <span class="hljs-string">"/home/linuxadmin/homelabservices/prometheus/prometheus.yml"</span>
+        <span class="hljs-attr">source:</span> <span class="hljs-string">"./prometheus.yml"</span>
         <span class="hljs-attr">target:</span> <span class="hljs-string">/etc/prometheus/prometheus.yml</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">"prometheus-data:/prometheus"</span>
     <span class="hljs-attr">networks:</span>
       <span class="hljs-bullet">-</span> <span class="hljs-string">monitoring</span>
 
@@ -434,10 +434,6 @@ code {
       <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">bind</span>
         <span class="hljs-attr">source:</span> <span class="hljs-string">/var/lib/docker</span>
         <span class="hljs-attr">target:</span> <span class="hljs-string">/var/lib/docker</span>
-        <span class="hljs-attr">read_only:</span> <span class="hljs-literal">true</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">bind</span>
-        <span class="hljs-attr">source:</span> <span class="hljs-string">/dev/disk</span>
-        <span class="hljs-attr">target:</span> <span class="hljs-string">/dev/disk</span>
         <span class="hljs-attr">read_only:</span> <span class="hljs-literal">true</span>
     <span class="hljs-attr">networks:</span>
       <span class="hljs-bullet">-</span> <span class="hljs-string">monitoring</span>
@@ -469,16 +465,15 @@ code {
 
 <span class="hljs-attr">volumes:</span>
   <span class="hljs-attr">prometheus-data:</span>
-    <span class="hljs-attr">driver_opts:</span>
-      <span class="hljs-attr">type:</span> <span class="hljs-string">none</span>
-      <span class="hljs-attr">o:</span> <span class="hljs-string">bind</span>
-      <span class="hljs-attr">device:</span> <span class="hljs-string">"/home/linuxadmin/homelabservices/prometheus"</span>
+  <span class="hljs-attr">grafana-data:</span>
 
 <span class="hljs-attr">networks:</span>
   <span class="hljs-attr">monitoring:</span>
     <span class="hljs-attr">driver:</span> <span class="hljs-string">bridge</span>
 </div></code></pre>
 <p>You will need to create the prometheus.yml file for configuring Prometheus. Below is an example of what this file would look like using my host addresses:</p>
+<pre class="hljs"><code><div>vi prometheus.yml
+</div></code></pre>
 <pre class="hljs"><code><div><span class="hljs-attr">global:</span>
   <span class="hljs-attr">scrape_interval:</span> <span class="hljs-string">15s</span>  <span class="hljs-comment"># How frequently to scrape targets</span>
   <span class="hljs-attr">evaluation_interval:</span> <span class="hljs-string">15s</span>  <span class="hljs-comment"># How frequently to evaluate rules</span>
@@ -487,16 +482,12 @@ code {
   <span class="hljs-bullet">-</span> <span class="hljs-attr">job_name:</span> <span class="hljs-string">'docker_swarm'</span>
     <span class="hljs-attr">static_configs:</span>
       <span class="hljs-bullet">-</span> <span class="hljs-attr">targets:</span>
-        <span class="hljs-bullet">-</span> <span class="hljs-number">10.1</span><span class="hljs-number">.149</span><span class="hljs-number">.59</span><span class="hljs-string">:9100</span>  <span class="hljs-comment"># Node Exporter running on Swarm node 1</span>
-        <span class="hljs-bullet">-</span> <span class="hljs-number">10.1</span><span class="hljs-number">.149</span><span class="hljs-number">.60</span><span class="hljs-string">:9100</span>  <span class="hljs-comment"># Node Exporter running on Swarm node 2</span>
-        <span class="hljs-bullet">-</span> <span class="hljs-number">10.1</span><span class="hljs-number">.149</span><span class="hljs-number">.61</span><span class="hljs-string">:9100</span>  <span class="hljs-comment"># Node Exporter running on Swarm node 3</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-string">node_exporter:9100</span>  <span class="hljs-comment"># Node Exporter instance</span>
 
   <span class="hljs-bullet">-</span> <span class="hljs-attr">job_name:</span> <span class="hljs-string">'cadvisor'</span>
     <span class="hljs-attr">static_configs:</span>
       <span class="hljs-bullet">-</span> <span class="hljs-attr">targets:</span>
-        <span class="hljs-bullet">-</span> <span class="hljs-number">10.1</span><span class="hljs-number">.149</span><span class="hljs-number">.59</span><span class="hljs-string">:8080</span>  <span class="hljs-comment"># cAdvisor running on Swarm node 1</span>
-        <span class="hljs-bullet">-</span> <span class="hljs-number">10.1</span><span class="hljs-number">.149</span><span class="hljs-number">.60</span><span class="hljs-string">:8080</span>  <span class="hljs-comment"># cAdvisor running on Swarm node 2</span>
-        <span class="hljs-bullet">-</span> <span class="hljs-number">10.1</span><span class="hljs-number">.149</span><span class="hljs-number">.61</span><span class="hljs-string">:8080</span>  <span class="hljs-comment"># cAdvisor running on Swarm node 3</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-string">cadvisor:8080</span>  <span class="hljs-comment"># cAdvisor instance</span>
 </div></code></pre>
 <p>Once you have your prometheus configuration file in place and directory structure for your persistent data configured, you can bring up the stack with:</p>
 <pre class="hljs"><code><div>docker compose up -d
@@ -530,7 +521,7 @@ The overlay network named monitoring is used for the stack in the Swarm setup (o
 <p>This will launch the Import Dashboard dialog. Here we can paste in a community dashboard ID and then click Load.</p>
 <p><img src="images/enter-the-grafana-dashboard-id-and-load-the-dashboard.png" alt="Enter the grafana dashboard id and load the dashboard">
 <strong>Enter the grafana dashboard id and load the dashboard</strong></p>
-<p>Here I pasted in the Container in Docker and System Monitoring dashboard that is freely available on the Grafana community dashboard site and is ID: 13112. Once you paste in the ID and hit Load, you will select Prometheus from the Prometheus drop down or whatever you named your Prometheus instance that you just setup.</p>
+<p>Here I pasted in the Container in Docker and System Monitoring dashboard that is freely available on the <a href="https://grafana.com/grafana/dashboards/">Grafana community dashboard site</a> and is ID: <strong>13112</strong>. Once you paste in the ID and hit Load, you will select Prometheus from the Prometheus drop down or whatever you named your Prometheus instance that you just setup.</p>
 <p><img src="images/point-to-your-prometheus-instance.png" alt="Point to your prometheus instance">
 <strong>Point to your prometheus instance</strong></p>
 <p>Great information! It combines both Node Exporter information and cAdvisor to give an overall view of both your container host and the container metrics.</p>
