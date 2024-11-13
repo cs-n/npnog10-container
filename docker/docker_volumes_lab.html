@@ -390,7 +390,7 @@ We can use the <code>inspect</code> command and then scroll into the output unti
 <pre class="hljs"><code><div>docker container inspect c1
 </div></code></pre>
 <p>Or we can directly use the Go template notation and get the content of the <strong>GraphDriver</strong> keys right away.</p>
-<pre class="hljs"><code><div>docker container inspect -f <span class="hljs-string">"{{ "</span>{{ json .GraphDriver <span class="hljs-string">"}}}}"</span> c1 | jq
+<pre class="hljs"><code><div>docker container inspect -f <span class="hljs-string">"{{ json .GraphDriver }}"</span> c1 | jq
 </div></code></pre>
 <p>You should then get an output like the following (the ID will not be the same though)</p>
 <pre class="hljs"><code><div>{
@@ -443,7 +443,7 @@ We can use the inspect command and then scroll into the output until we find the
 <pre class="hljs"><code><div>docker container inspect c2
 </div></code></pre>
 <p>Or we can directly use the Go template notation and get the content of the <strong>Mounts</strong> keys right away.</p>
-<pre class="hljs"><code><div>docker container inspect -f <span class="hljs-string">"{{ "</span>{{ json .Mounts <span class="hljs-string">"}}}}"</span>  c2 | jq
+<pre class="hljs"><code><div>docker container inspect -f <span class="hljs-string">"{{ json .Mounts }}"</span>  c2 | jq
 </div></code></pre>
 <p>You should then get an output like the following (the ID will not be the same though)</p>
 <pre class="hljs"><code><div>[
@@ -476,7 +476,7 @@ In order the PID 1 process remains active, we use the following command that pin
 <pre class="hljs"><code><div>docker container run --name c3 -d -v /data alpine sh -c <span class="hljs-string">'ping 8.8.8.8 &gt; /data/ping.txt'</span>
 </div></code></pre>
 <p>Let's inspect the container and get the <strong>Mounts</strong> key using the Go template notation.</p>
-<pre class="hljs"><code><div>docker container inspect -f <span class="hljs-string">"{{ "</span>{{ json .Mounts <span class="hljs-string">"}}}}"</span> c3 | jq
+<pre class="hljs"><code><div>docker container inspect -f <span class="hljs-string">"{{ json .Mounts }}"</span> c3 | jq
 </div></code></pre>
 <p>We have pretty much the same output as we had when we defined the volume in the Dockerfile.</p>
 <pre class="hljs"><code><div>[
@@ -546,13 +546,18 @@ In order the PID 1 process remains active, we use the following command that pin
 <pre class="hljs"><code><div>ls /var/lib/docker/volumes/html/_data
 </div></code></pre>
 <p>The content of the <strong>/usr/share/nginx/html</strong> folder of the <strong>www</strong> container has been copied into the <strong>/var/lib/docker/volumes/html/_data</strong> folder on the host.</p>
-<p>Let's have a look at the nginx's <a href="/">welcome page</a>{:data-term=&quot;bash&quot;}{:data-port=&quot;8080&quot;}</p>
+<p>Let's have a look at the nginx's welcome page</p>
+<pre class="hljs"><code><div>curl http://127.0.0.1:8080
+</div></code></pre>
 <p>From our host, we can now modify the index.html file and verify the changes are taken into account within the container.</p>
 <pre class="hljs"><code><div>cat&lt;&lt;END &gt;/var/lib/docker/volumes/html/_data/index.html
 SOMEONE HERE ?
 END
 </div></code></pre>
-<p>Let's have a look at the nginx's <a href="/">welcome page</a>{:data-term=&quot;bash&quot;}{:data-port=&quot;8080&quot;}. We can see the changes we have done in the index.html.</p>
+<p>Let's have a look at the nginx's welcome page again.</p>
+<pre class="hljs"><code><div>curl http://127.0.0.1:8080
+</div></code></pre>
+<p>We can see the changes we have done in the index.html.</p>
 <p>Note: please reload the page if you cannot see the changes.</p>
 <h2 id="mount-hosts-folder-into-a-container">Mount host's folder into a container</h2>
 <p>The last item we will talk about is named bind-mount and consist of mounting a host's folder into a container's folder. This is done using the <strong>-v</strong> option of the <strong>docker container run</strong> command. Instead of specifying one single path (as we did when defining volumes) we will specified 2 paths separated by a column.</p>
