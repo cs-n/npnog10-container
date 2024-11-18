@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>docker_web_ui_lab.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="working-with-yatch">Working with Yatch</h1>
+<p><strong>Yacht</strong> is a lightweight, web-based interface for managing Docker containers. It provides a simple and user-friendly way to handle Docker containers, images, volumes, and networks, making it easier for users who prefer a graphical interface over command-line operations.</p>
+<h2 id="key-features-of-yacht">Key Features of Yacht</h2>
+<ul>
+<li><strong>Web-Based Interface</strong>: You can access it through a web browser, making container management more intuitive.</li>
+<li><strong>Container Management</strong>: Easily start, stop, restart, or remove Docker containers.</li>
+<li><strong>Image Management</strong>: Pull Docker images and view available images in your system.</li>
+<li><strong>Volume &amp; Network Management</strong>: Manage Docker volumes and networks from the interface.</li>
+<li><strong>Templates</strong>: Yacht allows for the creation of templates, which can simplify container deployment by providing pre-configured settings.</li>
+<li><strong>Event Logs</strong>: View logs and events happening within your Docker environment.</li>
+</ul>
+<h2 id="why-use-yacht">Why Use Yacht?</h2>
+<p>Yacht makes Docker management accessible for users who may not be comfortable using the command line all the time. It simplifies tasks like deploying new containers or checking the status of running services with an easy-to-use interface. It’s especially helpful for beginners who want to explore Docker without diving into complex commands.</p>
+<h2 id="run-yacht-using-docker-compose">Run <strong>Yacht</strong> using <strong>Docker Compose</strong></h2>
+<h3 id="step-1-create-a-docker-composeyml-file">Step 1: Create a <code>docker-compose.yml</code> File</h3>
+<ol>
+<li>
+<p>Create a directory for your Docker Compose setup, for example:</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">cd</span> /src/
+mkdir yacht
+<span class="hljs-built_in">cd</span> yacht
+</div></code></pre>
+</li>
+<li>
+<p>Inside this directory, create a file called <code>docker-compose.yml</code>:</p>
+<pre class="hljs"><code><div>touch docker-compose.yml
+</div></code></pre>
+</li>
+<li>
+<p>Open the <code>docker-compose.yml</code> file in a text editor, then add the following content:</p>
+<pre class="hljs"><code><div><span class="hljs-attr">version:</span> <span class="hljs-string">'3.8'</span>
+
+<span class="hljs-attr">services:</span>
+  <span class="hljs-attr">yacht:</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">selfhostedpro/yacht</span>
+    <span class="hljs-attr">container_name:</span> <span class="hljs-string">yacht</span>
+    <span class="hljs-attr">ports:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-number">8000</span><span class="hljs-string">:8000</span>
+    <span class="hljs-attr">volumes:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">/var/run/docker.sock:/var/run/docker.sock</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">./config:/config</span>
+    <span class="hljs-attr">restart:</span> <span class="hljs-string">unless-stopped</span>
+</div></code></pre>
+<p>Here’s what each section means:</p>
+<ul>
+<li><strong><code>version: '3.8'</code></strong>: The version of the Docker Compose file format.</li>
+<li><strong><code>services:</code></strong>: This is where we define the Yacht service.
+<ul>
+<li><strong><code>image: selfhostedpro/yacht</code></strong>: The Docker image for Yacht.</li>
+<li><strong><code>container_name: yacht</code></strong>: This gives the container the name “yacht”.</li>
+<li><strong><code>ports: 8000:8000</code></strong>: Exposes port 8000 of the container to port 8000 on your computer.</li>
+<li><strong><code>volumes:</code></strong>: Maps system resources to the container.
+<ul>
+<li><code>/var/run/docker.sock:/var/run/docker.sock</code>: Allows Yacht to communicate with Docker.</li>
+<li><code>./config:/config</code>: Stores Yacht’s configuration on your local machine.</li>
+</ul>
+</li>
+<li><strong><code>restart: unless-stopped</code></strong>: Automatically restarts the container unless stopped manually.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="step-2-start-yacht-with-docker-compose">Step 2: Start Yacht with Docker Compose</h3>
+<ol>
+<li>
+<p>Make sure you're in the same directory as your <code>docker-compose.yml</code> file.</p>
+</li>
+<li>
+<p>Run the following command to start Yacht using Docker Compose:</p>
+<pre class="hljs"><code><div>docker-compose up -d
+</div></code></pre>
+<ul>
+<li><code>up</code>: Starts the containers specified in the <code>docker-compose.yml</code>.</li>
+<li><code>-d</code>: Runs the containers in the background (detached mode).</li>
+</ul>
+</li>
+<li>
+<p>Docker Compose will pull the <strong>Yacht</strong> image (if not already downloaded) and create the container.</p>
+</li>
+</ol>
+<h3 id="step-3-access-yacht-in-your-browser">Step 3: Access Yacht in Your Browser</h3>
+<ol>
+<li>
+<p>Open a web browser.</p>
+</li>
+<li>
+<p>Type the following in the address bar:</p>
+<pre class="hljs"><code><div>http://srvX.lab.npnog.org.np:8000
+</div></code></pre>
+<p>This opens the Yacht web interface.</p>
+</li>
+</ol>
+<h3 id="step-4-managing-containers-through-yacht">Step 4: Managing Containers Through Yacht</h3>
+<ol>
+<li><strong>Login</strong> to Yacht (the default username is <code>admin</code> and password is <code>pass</code>—change this in the settings).</li>
+<li>From the dashboard, you can:
+<ul>
+<li><strong>View running containers</strong>.</li>
+<li><strong>Start, stop, or remove containers</strong>.</li>
+<li><strong>Create new containers</strong> from Docker images.</li>
+</ul>
+</li>
+</ol>
+<h3 id="example-commands-in-yacht">Example Commands in Yacht</h3>
+<ul>
+<li>
+<p>To pull a new Docker image through the Yacht interface:</p>
+<ul>
+<li>Click on the <strong>Images</strong> tab, then click <strong>Pull</strong> and enter the name of the image (for example, <code>nginx</code>).</li>
+</ul>
+</li>
+<li>
+<p>To run a new container from an image:</p>
+<ul>
+<li>After pulling an image, click on the <strong>Containers</strong> tab, then <strong>Add Container</strong>. Enter the container details and press <strong>Create</strong>.</li>
+</ul>
+</li>
+</ul>
+<h3 id="step-5-optional-stop-and-remove-yacht-containers">Step 5: (Optional) Stop and Remove Yacht Containers</h3>
+<p>To stop the Yacht service, run:</p>
+<pre class="hljs"><code><div>docker-compose down
+</div></code></pre>
+<p>This will stop and remove the Yacht container, but it won’t remove the image or any persistent data in the <code>./config</code> folder.</p>
+<hr>
+
+</body>
+</html>
