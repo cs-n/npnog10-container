@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>docker_backup_lab.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="backuprestore-docker-data">Backup/Restore Docker Data</h1>
+<p>In this lab, you will learn how to perform Docker backups, including backing up Docker volumes, images, and configurations. You'll also learn how to restore from these backups.</p>
+<p><strong>Prerequisites</strong>:</p>
+<ul>
+<li>Docker installed on your system</li>
+<li>Basic understanding of Docker containers and volumes</li>
+<li>A sample running container with a volume to back up</li>
+</ul>
+<hr>
+<h2 id="step-1-setup-a-sample-docker-environment"><strong>Step 1: Setup a Sample Docker Environment</strong></h2>
+<h3 id="11-create-a-sample-docker-container-with-a-volume">1.1 <strong>Create a Sample Docker Container with a Volume</strong></h3>
+<p>Let's start by creating a container with a volume where containers store persistent data.</p>
+<ul>
+<li>
+<p>Run a simple container using the <code>nginx</code> web server, creating a volume to store data:</p>
+<pre class="hljs"><code><div>docker run -d --name my_nginx -v nginx_data:/usr/share/nginx/html -p 8080:80 nginx
+</div></code></pre>
+<ul>
+<li><code>-d</code>: Run the container in detached mode.</li>
+<li><code>--name</code>: Assign a name to the container (<code>my_nginx</code>).</li>
+<li><code>-v</code>: Create a Docker volume (<code>nginx_data</code>) and mount it to the container.</li>
+<li><code>-p</code>: Map port 8080 on your host to port 80 inside the container.</li>
+</ul>
+</li>
+</ul>
+<h3 id="12-verify-the-running-container">1.2 <strong>Verify the Running Container</strong></h3>
+<p>To verify that your container is running:</p>
+<pre class="hljs"><code><div>docker ps
+</div></code></pre>
+<p>You should see the <code>my_nginx</code> container running.</p>
+<h3 id="13-add-some-data-to-the-volume">1.3 <strong>Add Some Data to the Volume</strong></h3>
+<p>Let’s create a sample file inside the container’s volume:</p>
+<pre class="hljs"><code><div>docker <span class="hljs-built_in">exec</span> my_nginx sh -c <span class="hljs-string">"echo 'Hello, Docker Backup!' &gt; /usr/share/nginx/html/index.html"</span>
+</div></code></pre>
+<p>Now, if you visit <code>http://srvX.lab.npnog.org.np:8080</code>, you should see the message <strong>&quot;Hello, Docker Backup!&quot;</strong> in your browser.</p>
+<hr>
+<h2 id="step-2-back-up-docker-volumes"><strong>Step 2: Back Up Docker Volumes</strong></h2>
+<h3 id="21-list-docker-volumes">2.1 <strong>List Docker Volumes</strong></h3>
+<p>Check all the Docker volumes on your system:</p>
+<pre class="hljs"><code><div>docker volume ls
+</div></code></pre>
+<p>You should see <code>nginx_data</code> listed.</p>
+<h3 id="22-backup-a-docker-volume">2.2 <strong>Backup a Docker Volume</strong></h3>
+<p>Now, let’s back up the <code>nginx_data</code> volume to a tarball:</p>
+<pre class="hljs"><code><div>docker run --rm -v nginx_data:/data -v $(<span class="hljs-built_in">pwd</span>):/backup busybox tar cvf /backup/nginx_data_backup.tar /data
+</div></code></pre>
+<ul>
+<li>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li><code>--rm</code>: Automatically remove the container after it’s done.</li>
+<li><code>-v nginx_data:/data</code>: Mount the Docker volume (<code>nginx_data</code>) to <code>/data</code> inside the container.</li>
+<li><code>-v $(pwd):/backup</code>: Mount the current working directory on the host to <code>/backup</code> inside the container, where the tarball will be stored.</li>
+<li><code>busybox</code>: A small utility container for running commands like <code>tar</code>.</li>
+<li><code>tar cvf</code>: Create a tarball (compressed file) from the <code>/data</code> directory.</li>
+</ul>
+</li>
+<li>
+<p><strong>Result</strong>:</p>
+<ul>
+<li>You should now have a file called <code>nginx_data_backup.tar</code> in your current directory.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="step-3-back-up-docker-images"><strong>Step 3: Back Up Docker Images</strong></h2>
+<h3 id="31-save-the-docker-image">3.1 <strong>Save the Docker Image</strong></h3>
+<p>To back up the Docker image used by the container (in this case, <code>nginx</code>), use the <code>docker save</code> command:</p>
+<pre class="hljs"><code><div>docker save -o nginx_image_backup.tar nginx
+</div></code></pre>
+<ul>
+<li>This creates a tarball of the <code>nginx</code> image, saving it as <code>nginx_image_backup.tar</code>.</li>
+</ul>
+<hr>
+<h2 id="step-4-back-up-docker-compose-optional"><strong>Step 4: Back Up Docker Compose (Optional)</strong></h2>
+<p>If you're using <strong>Docker Compose</strong>, backing up the <code>docker-compose.yml</code> file is essential. Simply copy the file to your backup location.</p>
+<p><strong>Example</strong>:</p>
+<pre class="hljs"><code><div>cp /path/to/docker-compose.yml /path/to/backup/
+</div></code></pre>
+<hr>
+<h2 id="step-5-restore-docker-volumes-and-images"><strong>Step 5: Restore Docker Volumes and Images</strong></h2>
+<h3 id="51-restore-a-docker-volume">5.1 <strong>Restore a Docker Volume</strong></h3>
+<p>To restore a Docker volume from the backup tarball:</p>
+<ol>
+<li>
+<p>Remove or stop the current container (optional if necessary):</p>
+<pre class="hljs"><code><div>docker rm -f my_nginx
+</div></code></pre>
+</li>
+<li>
+<p>Recreate the volume and restore the data:</p>
+<pre class="hljs"><code><div>docker volume create nginx_data
+docker run --rm -v nginx_data:/data -v $(<span class="hljs-built_in">pwd</span>):/backup busybox tar xvf /backup/nginx_data_backup.tar -C /data
+</div></code></pre>
+<ul>
+<li>This restores the contents of <code>nginx_data_backup.tar</code> into the <code>nginx_data</code> volume.</li>
+</ul>
+</li>
+</ol>
+<h3 id="52-restore-a-docker-image">5.2 <strong>Restore a Docker Image</strong></h3>
+<p>To restore the Docker image from the tarball:</p>
+<pre class="hljs"><code><div>docker load -i nginx_image_backup.tar
+</div></code></pre>
+<ul>
+<li>This reloads the <code>nginx</code> image into Docker.</li>
+</ul>
+<hr>
+<h2 id="step-6-verify-the-restore"><strong>Step 6: Verify the Restore</strong></h2>
+<h3 id="61-recreate-the-container">6.1 <strong>Recreate the Container</strong></h3>
+<p>Now, recreate the <code>my_nginx</code> container using the restored volume and image:</p>
+<pre class="hljs"><code><div>docker run -d --name my_nginx -v nginx_data:/usr/share/nginx/html -p 8080:80 nginx
+</div></code></pre>
+<h3 id="62-check-if-data-is-restored">6.2 <strong>Check if Data is Restored</strong></h3>
+<p>Visit <code>http://srvX.lab.npnog.org.np:8080</code> again. If the backup and restore were successful, you should see the message <strong>&quot;Hello, Docker Backup!&quot;</strong> just as before.</p>
+<hr>
+<h2 id="step-7-automating-backups"><strong>Step 7: Automating Backups</strong></h2>
+<h3 id="71-setting-up-a-cron-job-for-regular-backups">7.1 <strong>Setting Up a Cron Job for Regular Backups</strong></h3>
+<p>You can schedule backups to run automatically using <strong>cron jobs</strong> on Linux systems. To set up a daily backup of the <code>nginx_data</code> volume:</p>
+<ol>
+<li>
+<p>Open the crontab editor:</p>
+<pre class="hljs"><code><div>crontab -e
+</div></code></pre>
+</li>
+<li>
+<p>Add the following line to schedule the backup at 2 AM every day:</p>
+<pre class="hljs"><code><div>0 2 * * * docker run --rm -v nginx_data:/data -v /backup:/backup busybox tar cvf /backup/nginx_data_backup.tar /data
+</div></code></pre>
+<p>This ensures that your volume data is regularly backed up without manual intervention.</p>
+</li>
+</ol>
+<hr>
+
+</body>
+</html>
