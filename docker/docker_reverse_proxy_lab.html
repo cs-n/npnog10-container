@@ -366,181 +366,6 @@ code {
     });
   </script>
 <h1 id="running-docker-continter-in-production">Running Docker continter in Production</h1>
-<h2 id="nginx-proxy-manager">Nginx Proxy Manager</h2>
-<p><strong>Nginx Proxy Manager</strong> is a simple and powerful tool that provides a web-based interface for managing Nginx reverse proxies, making it easy to set up SSL certificates and manage multiple services.</p>
-<hr>
-<h3 id="step-1-install-docker-and-docker-compose">Step 1: Install Docker and Docker Compose</h3>
-<ol>
-<li>
-<p>If you don't already have Docker installed, follow the instructions on <a href="https://www.docker.com/get-started">Docker’s website</a>.</p>
-</li>
-<li>
-<p>For Docker Compose, you can check if it's installed by running:</p>
-<pre class="hljs"><code><div>docker-compose --version
-</div></code></pre>
-<p>If not installed, install it by following the official guide <a href="https://docs.docker.com/compose/install/">here</a>.</p>
-</li>
-</ol>
-<h3 id="step-2-create-a-directory-for-nginx-proxy-manager">Step 2: Create a Directory for Nginx Proxy Manager</h3>
-<ol>
-<li>
-<p>Open a terminal and create a new directory to store the Docker Compose configuration:</p>
-<pre class="hljs"><code><div>mkdir nginx-proxy-manager
-<span class="hljs-built_in">cd</span> nginx-proxy-manager
-</div></code></pre>
-</li>
-</ol>
-<h3 id="step-3-create-a-docker-composeyml-file">Step 3: Create a <code>docker-compose.yml</code> File</h3>
-<ol>
-<li>
-<p>Inside the <code>nginx-proxy-manager</code> directory, create a new file named <code>docker-compose.yml</code>:</p>
-<pre class="hljs"><code><div>touch docker-compose.yml
-</div></code></pre>
-</li>
-<li>
-<p>Open the file with a text editor and add the following configuration:</p>
-<pre class="hljs"><code><div><span class="hljs-attr">version:</span> <span class="hljs-string">'3'</span>
-
-<span class="hljs-attr">services:</span>
-  <span class="hljs-attr">app:</span>
-    <span class="hljs-attr">image:</span> <span class="hljs-string">'jc21/nginx-proxy-manager:latest'</span>
-    <span class="hljs-attr">restart:</span> <span class="hljs-string">unless-stopped</span>
-    <span class="hljs-attr">ports:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">'80:80'</span>        <span class="hljs-comment"># HTTP</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">'81:81'</span>        <span class="hljs-comment"># Admin Panel</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">'443:443'</span>      <span class="hljs-comment"># HTTPS</span>
-    <span class="hljs-attr">environment:</span>
-      <span class="hljs-attr">DB_MYSQL_HOST:</span> <span class="hljs-string">"db"</span>
-      <span class="hljs-attr">DB_MYSQL_PORT:</span> <span class="hljs-number">3306</span>
-      <span class="hljs-attr">DB_MYSQL_USER:</span> <span class="hljs-string">"npm"</span>
-      <span class="hljs-attr">DB_MYSQL_PASSWORD:</span> <span class="hljs-string">"npm_password"</span>
-      <span class="hljs-attr">DB_MYSQL_NAME:</span> <span class="hljs-string">"npm"</span>
-    <span class="hljs-attr">volumes:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">./data:/data</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">./letsencrypt:/etc/letsencrypt</span>
-
-  <span class="hljs-attr">db:</span>
-    <span class="hljs-attr">image:</span> <span class="hljs-string">'mysql:5.7'</span>
-    <span class="hljs-attr">restart:</span> <span class="hljs-string">unless-stopped</span>
-    <span class="hljs-attr">environment:</span>
-      <span class="hljs-attr">MYSQL_ROOT_PASSWORD:</span> <span class="hljs-string">'root_password'</span>
-      <span class="hljs-attr">MYSQL_DATABASE:</span> <span class="hljs-string">'npm'</span>
-      <span class="hljs-attr">MYSQL_USER:</span> <span class="hljs-string">'npm'</span>
-      <span class="hljs-attr">MYSQL_PASSWORD:</span> <span class="hljs-string">'npm_password'</span>
-    <span class="hljs-attr">volumes:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">./mysql:/var/lib/mysql</span>
-</div></code></pre>
-<p>Here’s what this configuration does:</p>
-<ul>
-<li><strong>Services</strong>:
-<ul>
-<li><code>app</code>: This is the Nginx Proxy Manager container.</li>
-<li><code>db</code>: A MySQL 5.7 container to handle the database for Nginx Proxy Manager.</li>
-</ul>
-</li>
-<li><strong>Ports</strong>:
-<ul>
-<li><code>80:80</code>: Maps port 80 for HTTP traffic.</li>
-<li><code>81:81</code>: Maps port 81 for accessing the Nginx Proxy Manager admin web interface.</li>
-<li><code>443:443</code>: Maps port 443 for HTTPS traffic.</li>
-</ul>
-</li>
-<li><strong>Volumes</strong>:
-<ul>
-<li><code>./data:/data</code>: Stores Nginx Proxy Manager data on your local machine.</li>
-<li><code>./letsencrypt:/etc/letsencrypt</code>: Stores Let's Encrypt SSL certificates.</li>
-<li><code>./mysql:/var/lib/mysql</code>: Stores MySQL database files.</li>
-</ul>
-</li>
-</ul>
-</li>
-</ol>
-<h3 id="step-4-start-nginx-proxy-manager-using-docker-compose">Step 4: Start Nginx Proxy Manager Using Docker Compose</h3>
-<ol>
-<li>
-<p>Ensure you’re in the <code>nginx-proxy-manager</code> directory where your <code>docker-compose.yml</code> file is located.</p>
-</li>
-<li>
-<p>Run the following command to start the containers:</p>
-<pre class="hljs"><code><div>docker-compose up -d
-</div></code></pre>
-<ul>
-<li><code>up</code>: This starts the services defined in your <code>docker-compose.yml</code>.</li>
-<li><code>-d</code>: Runs the services in detached mode (in the background).</li>
-</ul>
-</li>
-<li>
-<p>Docker Compose will download the required images (if they aren’t already present) and start both the Nginx Proxy Manager and MySQL containers.</p>
-</li>
-</ol>
-<h3 id="step-5-access-the-nginx-proxy-manager-web-interface">Step 5: Access the Nginx Proxy Manager Web Interface</h3>
-<ol>
-<li>
-<p>Open a web browser and navigate to:</p>
-<pre class="hljs"><code><div>http://localhost:81
-</div></code></pre>
-</li>
-<li>
-<p>You’ll see the Nginx Proxy Manager login page. Use the following default credentials:</p>
-<ul>
-<li><strong>Email</strong>: <code>admin@example.com</code></li>
-<li><strong>Password</strong>: <code>changeme</code></li>
-</ul>
-</li>
-<li>
-<p>After logging in, change the admin email and password to something secure.</p>
-</li>
-</ol>
-<h3 id="step-6-add-a-proxy-host">Step 6: Add a Proxy Host</h3>
-<ol>
-<li>From the Nginx Proxy Manager dashboard, click <strong>Proxy Hosts</strong>.</li>
-<li>Click the <strong>Add Proxy Host</strong> button.</li>
-<li>Enter the domain or subdomain you want to proxy. For example, if you're running a service at <code>http://your-app:3000</code>, enter <code>your-app.local</code>.</li>
-<li>Under the <strong>Forward Hostname / IP</strong> section, enter the IP address or hostname of the service you want to proxy. For instance, <code>your-app</code>.</li>
-<li>Under <strong>Forward Port</strong>, enter the port number the service uses (e.g., <code>3000</code> for a service running on port 3000).</li>
-<li>Enable <strong>Block Common Exploits</strong> and <strong>Websockets Support</strong> (if needed).</li>
-<li>If you have a domain name and want to use HTTPS, go to the <strong>SSL</strong> tab and request a new SSL certificate via Let's Encrypt by checking the <strong>Force SSL</strong> and <strong>Request a new SSL certificate</strong> options.</li>
-</ol>
-<h3 id="step-7-verify-your-proxy-works">Step 7: Verify Your Proxy Works</h3>
-<ol>
-<li>Once you've set up a proxy host, you can access your service through the domain or subdomain you configured in the <strong>Add Proxy Host</strong> step.</li>
-<li>If you enabled HTTPS and requested a Let's Encrypt SSL certificate, make sure you access the service using <code>https://your-domain.com</code>.</li>
-</ol>
-<hr>
-<h3 id="step-8-managing-nginx-proxy-manager">Step 8: Managing Nginx Proxy Manager</h3>
-<p>You can continue to manage your proxy hosts, SSL certificates, and advanced Nginx configurations from the Nginx Proxy Manager admin interface. It also allows you to:</p>
-<ul>
-<li>View logs.</li>
-<li>Monitor SSL certificate renewals.</li>
-<li>Set up redirects or advanced proxy settings.</li>
-</ul>
-<h3 id="example-setting-up-a-proxy-for-a-local-application">Example: Setting Up a Proxy for a Local Application</h3>
-<p>Let’s say you’re running a web app locally on port 8080 and want to access it via <code>myapp.local</code>. You’d follow these steps:</p>
-<ol>
-<li>
-<p>Add <code>myapp.local</code> to your computer’s <code>hosts</code> file, pointing to <code>127.0.0.1</code>:</p>
-<pre class="hljs"><code><div>127.0.0.1 myapp.local
-</div></code></pre>
-</li>
-<li>
-<p>In Nginx Proxy Manager, add a new proxy host:</p>
-<ul>
-<li><strong>Domain Name</strong>: <code>myapp.local</code></li>
-<li><strong>Forward Hostname / IP</strong>: <code>127.0.0.1</code></li>
-<li><strong>Forward Port</strong>: <code>8080</code></li>
-</ul>
-</li>
-<li>
-<p>After configuring the proxy host, open your browser and visit <code>http://myapp.local</code> to see the application.</p>
-</li>
-</ol>
-<hr>
-<h3 id="step-9-stop-and-remove-nginx-proxy-manager-if-needed">Step 9: Stop and Remove Nginx Proxy Manager (if needed)</h3>
-<p>To stop the Nginx Proxy Manager containers, run:</p>
-<pre class="hljs"><code><div>docker-compose down
-</div></code></pre>
-<p>This will stop and remove both the Nginx Proxy Manager and MySQL containers, but your data will remain in the volumes (<code>./data</code>, <code>./letsencrypt</code>, and <code>./mysql</code>).</p>
-<hr>
 <h2 id="traefik">Traefik</h2>
 <p><strong>Traefik</strong> is a powerful and modern reverse proxy that integrates easily with Docker and other orchestrators. It automatically manages services, handles dynamic routing, and supports features like HTTPS and load balancing.</p>
 <h3 id="what-youll-need">What You'll Need:</h3>
@@ -552,7 +377,7 @@ code {
 <h3 id="step-1-install-docker-and-docker-compose">Step 1: Install Docker and Docker Compose</h3>
 <ol>
 <li><strong>Install Docker</strong>: If you don't have Docker installed, follow the instructions on <a href="https://www.docker.com/get-started">Docker’s website</a>.</li>
-<li><strong>Install Docker Compose</strong>: You can check if Docker Compose is installed by running:<pre class="hljs"><code><div>docker-compose --version
+<li><strong>Install Docker Compose</strong>: You can check if Docker Compose is installed by running:<pre class="hljs"><code><div>docker compose --<span class="hljs-built_in">help</span>
 </div></code></pre>
 If it's not installed, follow the guide <a href="https://docs.docker.com/compose/install/">here</a>.</li>
 </ol>
@@ -624,10 +449,10 @@ If it's not installed, follow the guide <a href="https://docs.docker.com/compose
       <span class="hljs-bullet">-</span> <span class="hljs-string">/var/run/docker.sock:/var/run/docker.sock</span>  <span class="hljs-comment"># Give Traefik access to Docker</span>
       <span class="hljs-bullet">-</span> <span class="hljs-string">./config/traefik.toml:/etc/traefik/traefik.toml</span>  <span class="hljs-comment"># Traefik configuration file</span>
     <span class="hljs-attr">networks:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">web</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">traefik-public</span>
 
 <span class="hljs-attr">networks:</span>
-  <span class="hljs-attr">web:</span>
+  <span class="hljs-attr">traefik-public:</span>
     <span class="hljs-attr">external:</span> <span class="hljs-literal">true</span>
 </div></code></pre>
 <p>Explanation:</p>
@@ -656,7 +481,7 @@ If it's not installed, follow the guide <a href="https://docs.docker.com/compose
 </ol>
 <h3 id="step-5-create-an-external-docker-network">Step 5: Create an External Docker Network</h3>
 <ol>
-<li>Traefik needs a Docker network to connect with other services. Create an external network named <code>web</code>:<pre class="hljs"><code><div>docker network create web
+<li>Traefik needs a Docker network to connect with other services. Create an external network named <code>web</code>:<pre class="hljs"><code><div>docker network create traefik-public
 </div></code></pre>
 </li>
 </ol>
@@ -709,7 +534,7 @@ If it's not installed, follow the guide <a href="https://docs.docker.com/compose
     <span class="hljs-attr">container_name:</span> <span class="hljs-string">nginx</span>
     <span class="hljs-attr">labels:</span>
       <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.enable=true"</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.http.routers.nginx.rule=Host(`nginx.local`)"</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.http.routers.nginx.rule=Host(`nginx.srvX.lab.npnog.org.np`)"</span>
       <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.http.services.nginx.loadbalancer.server.port=80"</span>
     <span class="hljs-attr">networks:</span>
       <span class="hljs-bullet">-</span> <span class="hljs-string">web</span>
@@ -726,7 +551,7 @@ If it's not installed, follow the guide <a href="https://docs.docker.com/compose
 <li><strong>Labels</strong>: The labels tell Traefik to manage this container.
 <ul>
 <li><code>&quot;traefik.enable=true&quot;</code>: Enables Traefik routing for this service.</li>
-<li><code>&quot;traefik.http.routers.nginx.rule=Host('nginx.local')&quot;</code>: Defines the routing rule (based on the hostname <code>nginx.local</code>).</li>
+<li><code>&quot;traefik.http.routers.nginx.rule=Host('nginx.local')&quot;</code>: Defines the routing rule (based on the hostname <code>nginx.srvX.lab.npnog.org.np</code>).</li>
 <li><code>&quot;traefik.http.services.nginx.loadbalancer.server.port=80&quot;</code>: Specifies the internal port that Nginx is using.</li>
 </ul>
 </li>
@@ -736,17 +561,7 @@ If it's not installed, follow the guide <a href="https://docs.docker.com/compose
 </ul>
 </li>
 </ol>
-<h3 id="step-9-add-nginxlocal-to-your-hosts-file">Step 9: Add <code>nginx.local</code> to Your <code>hosts</code> File</h3>
-<ol>
-<li>
-<p>To access <code>nginx.local</code> from your browser, add it to your local <code>hosts</code> file.</p>
-<p>For Linux and MacOS, open <code>/etc/hosts</code> and add the following line:</p>
-<pre class="hljs"><code><div>127.0.0.1 nginx.local
-</div></code></pre>
-<p>For Windows, edit the <code>C:\Windows\System32\drivers\etc\hosts</code> file similarly.</p>
-</li>
-</ol>
-<h3 id="step-10-start-the-nginx-service">Step 10: Start the Nginx Service</h3>
+<h3 id="step-9-start-the-nginx-service">Step 9: Start the Nginx Service</h3>
 <ol>
 <li>
 <p>In the <code>nginx</code> directory, start the Nginx service with Docker Compose:</p>
@@ -755,12 +570,12 @@ If it's not installed, follow the guide <a href="https://docs.docker.com/compose
 </li>
 <li>
 <p>Open your browser and navigate to:</p>
-<pre class="hljs"><code><div>http://nginx.local
+<pre class="hljs"><code><div>http://nginx.srvX.lab.npnog.org.np
 </div></code></pre>
 <p>You should see the default Nginx welcome page, confirming that Traefik is successfully routing traffic to your Nginx container.</p>
 </li>
 </ol>
-<h3 id="step-11-enable-https-optional">Step 11: Enable HTTPS (Optional)</h3>
+<h3 id="step-10-enable-https-optional">Step 10: Enable HTTPS (Optional)</h3>
 <p>To enable HTTPS with <strong>Let's Encrypt</strong>, update the <code>traefik.toml</code> configuration to include Let's Encrypt settings.</p>
 <ol>
 <li>
@@ -769,8 +584,7 @@ If it's not installed, follow the guide <a href="https://docs.docker.com/compose
   <span class="hljs-section">[certificatesResolvers.le.acme]</span>
     email = "your-email@example.com"
     storage = "/etc/traefik/acme.json"
-    <span class="hljs-section">[certificatesResolvers.le.acme.httpChallenge]</span>
-      entryPoint = "web"
+    <span class="hljs-section">[certificatesResolvers.myresolver.acme.tlsChallenge]</span>
 </div></code></pre>
 <p>This tells Traefik to use Let's Encrypt and store certificates in <code>/etc/traefik/acme.json</code>.</p>
 </li>
@@ -784,10 +598,10 @@ chmod 600 config/acme.json
 <p>Update your Nginx service’s Docker Compose labels to enable HTTPS:</p>
 <pre class="hljs"><code><div><span class="hljs-attr">labels:</span>
   <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.enable=true"</span>
-  <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.http.routers.nginx.rule=Host(`nginx.local`)"</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.http.routers.nginx.rule=Host(`nginx.srvX.lab.npnog.org.np`)"</span>
   <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.http.services.nginx.loadbalancer.server.port=80"</span>
   <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.http.routers.nginx.entrypoints=web"</span>
-  <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.http.routers.nginx-secure.rule=Host(`nginx.local`)"</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.http.routers.nginx-secure.rule=Host(`nginx.srvX.lab.npnoh.org.np`)"</span>
   <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.http.routers.nginx-secure.entrypoints=websecure"</span>
   <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.http.routers.nginx-secure.tls.certresolver=le"</span>
 </div></code></pre>
@@ -798,435 +612,17 @@ chmod 600 config/acme.json
 </div></code></pre>
 </li>
 <li>
-<p>Visit <code>https://nginx.local</code> to see the Nginx page served over HTTPS.</p>
+<p>Visit <code>https://nginx.srvX.lab.npnog.org.np</code> to see the Nginx page served over HTTPS.</p>
 </li>
 </ol>
 <hr>
-<h3 id="step-12">Step 12</h3>
+<h3 id="step-11-stop-and-remove-containers-if-needed">Step 11: Stop and Remove Containers (if needed)</h3>
+<p>To stop the Traefik and Nginx containers, run:</p>
+<pre class="hljs"><code><div>docker compose down
+</div></code></pre>
+<p>This will stop and remove the containers, but your configuration and volumes will remain.</p>
 <hr>
-<p><strong>Traefik</strong> is a modern, dynamic reverse proxy and load balancer for microservices and containerized applications, often used with Docker, Kubernetes, or other orchestration systems.</p>
-<h3 id="what-youll-need">What You’ll Need:</h3>
-<ul>
-<li><strong>Docker</strong> and <strong>Docker Compose</strong> installed on your machine.</li>
-<li>Basic knowledge of Docker and Docker Compose.</li>
-</ul>
-<hr>
-<h3 id="step-1-install-docker-and-docker-compose">Step 1: Install Docker and Docker Compose</h3>
-<ol>
-<li><strong>Install Docker</strong>: Follow the instructions on the <a href="https://www.docker.com/get-started">Docker official website</a> if you don't have Docker installed.</li>
-<li><strong>Install Docker Compose</strong>: If you don’t have Docker Compose, install it following the <a href="https://docs.docker.com/compose/install/">official guide</a>.</li>
-<li>Verify both Docker and Docker Compose are installed by running:<pre class="hljs"><code><div>docker --version
-docker-compose --version
-</div></code></pre>
-</li>
-</ol>
-<h3 id="step-2-create-a-directory-for-traefik-configuration">Step 2: Create a Directory for Traefik Configuration</h3>
-<ol>
-<li>Create a new directory where you'll store your Traefik configuration and Docker Compose files:<pre class="hljs"><code><div>mkdir traefik
-<span class="hljs-built_in">cd</span> traefik
-</div></code></pre>
-</li>
-</ol>
-<h3 id="step-3-create-the-docker-composeyml-file">Step 3: Create the <code>docker-compose.yml</code> File</h3>
-<ol>
-<li>
-<p>Inside the <code>traefik</code> directory, create a <code>docker-compose.yml</code> file:</p>
-<pre class="hljs"><code><div>touch docker-compose.yml
-</div></code></pre>
-</li>
-<li>
-<p>Open the <code>docker-compose.yml</code> file in your favorite text editor and add the following configuration:</p>
-<pre class="hljs"><code><div><span class="hljs-attr">version:</span> <span class="hljs-string">'3.8'</span>
-
-<span class="hljs-attr">services:</span>
-  <span class="hljs-attr">traefik:</span>
-    <span class="hljs-attr">image:</span> <span class="hljs-string">traefik:v2.10</span>
-    <span class="hljs-attr">container_name:</span> <span class="hljs-string">traefik</span>
-    <span class="hljs-attr">restart:</span> <span class="hljs-string">unless-stopped</span>
-    <span class="hljs-attr">command:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"--api.insecure=true"</span>  <span class="hljs-comment"># Enables the Traefik dashboard (insecure for testing)</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"--providers.docker=true"</span>  <span class="hljs-comment"># Enable Docker as a provider</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"--entryPoints.web.address=:80"</span>  <span class="hljs-comment"># Define the HTTP entry point</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"--entryPoints.websecure.address=:443"</span>  <span class="hljs-comment"># Define the HTTPS entry point</span>
-    <span class="hljs-attr">ports:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"80:80"</span>   <span class="hljs-comment"># HTTP port</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"443:443"</span> <span class="hljs-comment"># HTTPS port</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"8080:8080"</span> <span class="hljs-comment"># Traefik dashboard port</span>
-    <span class="hljs-attr">volumes:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"/var/run/docker.sock:/var/run/docker.sock"</span>  <span class="hljs-comment"># Allows Traefik to interact with Docker</span>
-    <span class="hljs-attr">labels:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.enable=true"</span>  <span class="hljs-comment"># Enables Traefik for this container</span>
-
-  <span class="hljs-comment"># Example Web Application (to demonstrate Traefik in action)</span>
-  <span class="hljs-attr">whoami:</span>
-    <span class="hljs-attr">image:</span> <span class="hljs-string">traefik/whoami</span>
-    <span class="hljs-attr">container_name:</span> <span class="hljs-string">whoami</span>
-    <span class="hljs-attr">labels:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.http.routers.whoami.rule=Host(`whoami.local`)"</span>  <span class="hljs-comment"># Router rule for this service</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.http.services.whoami.loadbalancer.server.port=80"</span>  <span class="hljs-comment"># Port for the service</span>
-
-</div></code></pre>
-</li>
-</ol>
-<h3 id="key-points">Key Points:</h3>
-<ul>
-<li>
-<p><strong>Traefik Service</strong>:</p>
-<ul>
-<li>Uses <code>traefik:v2.10</code> image.</li>
-<li>Exposes HTTP (port 80), HTTPS (port 443), and dashboard (port 8080).</li>
-<li>The <code>--api.insecure=true</code> command enables the Traefik dashboard (though insecure, it’s fine for a test environment).</li>
-<li>Docker provider is enabled with <code>--providers.docker=true</code>, meaning Traefik will discover containers automatically.</li>
-<li>Traefik’s volume mounts the Docker socket (<code>/var/run/docker.sock</code>) to interact with Docker.</li>
-</ul>
-</li>
-<li>
-<p><strong>Whoami Service</strong>:</p>
-<ul>
-<li>A simple HTTP service that returns basic information about the request. It is used to demonstrate Traefik's reverse proxy functionality.</li>
-<li>It has Traefik labels to specify routing rules: the <code>Host</code> rule is set to route requests for <code>whoami.local</code> to this container.</li>
-</ul>
-</li>
-</ul>
-<h3 id="step-4-start-traefik-and-the-web-service-using-docker-compose">Step 4: Start Traefik and the Web Service Using Docker Compose</h3>
-<ol>
-<li>
-<p>Make sure you are inside the directory where your <code>docker-compose.yml</code> file is located.</p>
-</li>
-<li>
-<p>Run the following command to start Traefik and the example service (<code>whoami</code>):</p>
-<pre class="hljs"><code><div>docker-compose up -d
-</div></code></pre>
-<ul>
-<li><code>up</code>: Starts the containers defined in <code>docker-compose.yml</code>.</li>
-<li><code>-d</code>: Runs the containers in detached mode.</li>
-</ul>
-</li>
-<li>
-<p>Docker will pull the necessary images (if they’re not already present) and start both the <strong>Traefik</strong> and <strong>whoami</strong> containers.</p>
-</li>
-</ol>
-<h3 id="step-5-access-the-traefik-dashboard">Step 5: Access the Traefik Dashboard</h3>
-<ol>
-<li>
-<p>Open your browser and go to the following URL to access the Traefik dashboard:</p>
-<pre class="hljs"><code><div>http://localhost:8080
-</div></code></pre>
-</li>
-<li>
-<p>You should see the Traefik dashboard showing the <strong>whoami</strong> container as a service.</p>
-</li>
-</ol>
-<h3 id="step-6-test-the-traefik-reverse-proxy">Step 6: Test the Traefik Reverse Proxy</h3>
-<ol>
-<li>
-<p>To test the proxy, you need to edit your system’s <code>hosts</code> file to point <code>whoami.local</code> to <code>127.0.0.1</code> (localhost).</p>
-<p>On Linux or MacOS:</p>
-<pre class="hljs"><code><div>sudo nano /etc/hosts
-</div></code></pre>
-<p>Add the following line:</p>
-<pre class="hljs"><code><div>127.0.0.1 whoami.local
-</div></code></pre>
-<p>On Windows, you can edit the <code>hosts</code> file located at <code>C:\Windows\System32\drivers\etc\hosts</code> and add:</p>
-<pre class="hljs"><code><div>127.0.0.1 whoami.local
-</div></code></pre>
-</li>
-<li>
-<p>After saving the <code>hosts</code> file, open a web browser and visit:</p>
-<pre class="hljs"><code><div>http://whoami.local
-</div></code></pre>
-</li>
-<li>
-<p>You should see the response from the <strong>whoami</strong> container, showing basic information about the request (like headers, IP, etc.).</p>
-</li>
-</ol>
-<h3 id="step-7-add-more-services-optional">Step 7: Add More Services (Optional)</h3>
-<p>You can add more services to the <code>docker-compose.yml</code> file and manage them with Traefik in a similar way. Here's an example of adding another service:</p>
-<pre class="hljs"><code><div>  <span class="hljs-attr">example:</span>
-    <span class="hljs-attr">image:</span> <span class="hljs-string">httpd:alpine</span>
-    <span class="hljs-attr">container_name:</span> <span class="hljs-string">example</span>
-    <span class="hljs-attr">labels:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.http.routers.example.rule=Host(`example.local`)"</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.http.services.example.loadbalancer.server.port=80"</span>
-</div></code></pre>
-<ol>
-<li>
-<p>After adding this service, don't forget to update the <code>hosts</code> file again:</p>
-<pre class="hljs"><code><div>127.0.0.1 example.local
-</div></code></pre>
-</li>
-<li>
-<p>Visit <code>http://example.local</code> to see the new service.</p>
-</li>
-</ol>
-<h3 id="step-8-stopping-the-containers">Step 8: Stopping the Containers</h3>
-<p>To stop the containers, use the following command:</p>
-<pre class="hljs"><code><div>docker-compose down
-</div></code></pre>
-<p>This will stop and remove the containers but leave the volumes intact (for data persistence).</p>
-<hr>
-<h3 id="example-of-a-complete-docker-composeyml-file">Example of a Complete <code>docker-compose.yml</code> File</h3>
-<p>Here’s an example of a more complete <code>docker-compose.yml</code> with multiple services:</p>
-<pre class="hljs"><code><div><span class="hljs-attr">version:</span> <span class="hljs-string">'3.8'</span>
-
-<span class="hljs-attr">services:</span>
-  <span class="hljs-attr">traefik:</span>
-    <span class="hljs-attr">image:</span> <span class="hljs-string">traefik:v2.10</span>
-    <span class="hljs-attr">container_name:</span> <span class="hljs-string">traefik</span>
-    <span class="hljs-attr">restart:</span> <span class="hljs-string">unless-stopped</span>
-    <span class="hljs-attr">command:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"--api.insecure=true"</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"--providers.docker=true"</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"--entryPoints.web.address=:80"</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"--entryPoints.websecure.address=:443"</span>
-    <span class="hljs-attr">ports:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"80:80"</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"443:443"</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"8080:8080"</span>
-    <span class="hljs-attr">volumes:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"/var/run/docker.sock:/var/run/docker.sock"</span>
-
-  <span class="hljs-attr">whoami:</span>
-    <span class="hljs-attr">image:</span> <span class="hljs-string">traefik/whoami</span>
-    <span class="hljs-attr">container_name:</span> <span class="hljs-string">whoami</span>
-    <span class="hljs-attr">labels:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.http.routers.whoami.rule=Host(`whoami.local`)"</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.http.services.whoami.loadbalancer.server.port=80"</span>
-
-  <span class="hljs-attr">example:</span>
-    <span class="hljs-attr">image:</span> <span class="hljs-string">httpd:alpine</span>
-    <span class="hljs-attr">container_name:</span> <span class="hljs-string">example</span>
-    <span class="hljs-attr">labels:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.http.routers.example.rule=Host(`example.local`)"</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.http.services.example.loadbalancer.server.port=80"</span>
-</div></code></pre>
-<hr>
-<h2 id="caddy">Caddy</h2>
-<p><strong>Caddy</strong> is a modern web server that automatically provisions SSL certificates using Let's Encrypt, which makes it very easy to set up secure HTTPS servers.</p>
-<h3 id="what-youll-need">What You’ll Need:</h3>
-<ul>
-<li><strong>Docker</strong> and <strong>Docker Compose</strong> installed.</li>
-<li>Basic knowledge of Docker and Docker Compose.</li>
-</ul>
-<hr>
-<h3 id="step-1-install-docker-and-docker-compose">Step 1: Install Docker and Docker Compose</h3>
-<ol>
-<li><strong>Install Docker</strong>: Follow the instructions on the <a href="https://www.docker.com/get-started">Docker official website</a> if you don't have Docker installed.</li>
-<li><strong>Install Docker Compose</strong>: If you don’t have Docker Compose, you can install it following the <a href="https://docs.docker.com/compose/install/">official guide</a>.</li>
-<li>Verify that Docker and Docker Compose are installed correctly:<pre class="hljs"><code><div>docker --version
-docker-compose --version
-</div></code></pre>
-</li>
-</ol>
-<h3 id="step-2-create-a-directory-for-caddy-configuration">Step 2: Create a Directory for Caddy Configuration</h3>
-<ol>
-<li>Create a new directory where you'll store the Caddy configuration and Docker Compose files:<pre class="hljs"><code><div>mkdir caddy-docker
-<span class="hljs-built_in">cd</span> caddy-docker
-</div></code></pre>
-</li>
-</ol>
-<h3 id="step-3-create-the-docker-composeyml-file">Step 3: Create the <code>docker-compose.yml</code> File</h3>
-<ol>
-<li>
-<p>Inside the <code>caddy-docker</code> directory, create a <code>docker-compose.yml</code> file:</p>
-<pre class="hljs"><code><div>touch docker-compose.yml
-</div></code></pre>
-</li>
-<li>
-<p>Open the <code>docker-compose.yml</code> file in your preferred text editor and add the following configuration:</p>
-<pre class="hljs"><code><div><span class="hljs-attr">version:</span> <span class="hljs-string">'3.8'</span>
-
-<span class="hljs-attr">services:</span>
-  <span class="hljs-attr">caddy:</span>
-    <span class="hljs-attr">image:</span> <span class="hljs-string">caddy:latest</span>
-    <span class="hljs-attr">container_name:</span> <span class="hljs-string">caddy</span>
-    <span class="hljs-attr">restart:</span> <span class="hljs-string">unless-stopped</span>
-    <span class="hljs-attr">ports:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"80:80"</span>    <span class="hljs-comment"># HTTP port</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"443:443"</span>  <span class="hljs-comment"># HTTPS port</span>
-    <span class="hljs-attr">volumes:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">./Caddyfile:/etc/caddy/Caddyfile</span>   <span class="hljs-comment"># Mount the Caddyfile configuration</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">./data:/data</span>                        <span class="hljs-comment"># To store certificates</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">./config:/config</span>                    <span class="hljs-comment"># Configuration data</span>
-    <span class="hljs-attr">environment:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">ACME_AGREE=true</span>                     <span class="hljs-comment"># Automatically accept the Let's Encrypt terms</span>
-    <span class="hljs-attr">networks:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">caddy_network</span>
-
-  <span class="hljs-attr">whoami:</span>
-    <span class="hljs-attr">image:</span> <span class="hljs-string">traefik/whoami</span>
-    <span class="hljs-attr">container_name:</span> <span class="hljs-string">whoami</span>
-    <span class="hljs-attr">labels:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.enable=false"</span>  <span class="hljs-comment"># Disable Traefik routing for this container</span>
-    <span class="hljs-attr">networks:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">caddy_network</span>
-
-<span class="hljs-attr">networks:</span>
-  <span class="hljs-attr">caddy_network:</span>
-    <span class="hljs-attr">driver:</span> <span class="hljs-string">bridge</span>
-</div></code></pre>
-</li>
-</ol>
-<h3 id="key-points">Key Points:</h3>
-<ul>
-<li>
-<p><strong>Caddy Service</strong>:</p>
-<ul>
-<li>Uses the official <code>caddy:latest</code> Docker image.</li>
-<li>Exposes ports 80 (HTTP) and 443 (HTTPS) for web traffic.</li>
-<li>Mounts the <code>Caddyfile</code> configuration file to <code>/etc/caddy/Caddyfile</code> in the container.</li>
-<li>Mounts a <code>data</code> volume for storing SSL certificates, so they persist across container restarts.</li>
-<li>Sets an environment variable <code>ACME_AGREE=true</code> to automatically accept the Let's Encrypt terms.</li>
-</ul>
-</li>
-<li>
-<p><strong>Whoami Service</strong>:</p>
-<ul>
-<li>This is a simple HTTP service that responds with information about the request. It’s used here as an example application to be served by Caddy.</li>
-<li>Disabled Traefik routing by setting the label <code>traefik.enable=false</code>.</li>
-</ul>
-</li>
-<li>
-<p><strong>Networks</strong>:</p>
-<ul>
-<li>Both services are connected to a custom network (<code>caddy_network</code>), allowing Caddy to route traffic to <code>whoami</code>.</li>
-</ul>
-</li>
-</ul>
-<h3 id="step-4-create-the-caddy-configuration-file">Step 4: Create the Caddy Configuration File</h3>
-<ol>
-<li>
-<p>Inside the same <code>caddy-docker</code> directory, create a <code>Caddyfile</code> to configure how Caddy should handle incoming traffic. This is where you’ll define routing rules, domains, and SSL configurations.</p>
-<pre class="hljs"><code><div>touch Caddyfile
-</div></code></pre>
-</li>
-<li>
-<p>Open the <code>Caddyfile</code> in your text editor and add the following content:</p>
-<pre class="hljs"><code><div>whoami.local {
-    reverse_proxy whoami:80
-}
-</div></code></pre>
-<p>This configuration tells Caddy to listen for requests to <code>whoami.local</code> and reverse proxy those requests to the <strong>whoami</strong> service running on port <code>80</code>.</p>
-<blockquote>
-<p><strong>Important</strong>: The <code>whoami.local</code> domain will need to be added to your system's <code>hosts</code> file for it to resolve locally.</p>
-</blockquote>
-</li>
-</ol>
-<h3 id="step-5-start-caddy-and-the-example-service">Step 5: Start Caddy and the Example Service</h3>
-<ol>
-<li>
-<p>Make sure you are in the directory where the <code>docker-compose.yml</code> and <code>Caddyfile</code> are located.</p>
-</li>
-<li>
-<p>Run the following command to start the services in detached mode:</p>
-<pre class="hljs"><code><div>docker-compose up -d
-</div></code></pre>
-<ul>
-<li><code>up</code>: Starts the containers defined in <code>docker-compose.yml</code>.</li>
-<li><code>-d</code>: Runs the containers in detached mode (in the background).</li>
-</ul>
-</li>
-<li>
-<p>Docker will pull the necessary images and start both the <strong>Caddy</strong> and <strong>whoami</strong> containers.</p>
-</li>
-</ol>
-<h3 id="step-6-edit-the-hosts-file">Step 6: Edit the <code>hosts</code> File</h3>
-<p>To access the <code>whoami.local</code> domain, you need to modify your system's <code>hosts</code> file so that <code>whoami.local</code> points to <code>127.0.0.1</code> (localhost).</p>
-<ul>
-<li>
-<p><strong>On Linux or MacOS</strong>:</p>
-<ol>
-<li>Open the <code>hosts</code> file with a text editor:<pre class="hljs"><code><div>sudo nano /etc/hosts
-</div></code></pre>
-</li>
-<li>Add the following line to the file:<pre class="hljs"><code><div>127.0.0.1 whoami.local
-</div></code></pre>
-</li>
-<li>Save and close the file.</li>
-</ol>
-</li>
-<li>
-<p><strong>On Windows</strong>:</p>
-<ol>
-<li>Open the <code>hosts</code> file located at <code>C:\Windows\System32\drivers\etc\hosts</code> in a text editor (run as Administrator).</li>
-<li>Add the following line:<pre class="hljs"><code><div>127.0.0.1 whoami.local
-</div></code></pre>
-</li>
-<li>Save and close the file.</li>
-</ol>
-</li>
-</ul>
-<h3 id="step-7-access-the-service-in-a-browser">Step 7: Access the Service in a Browser</h3>
-<ol>
-<li>
-<p>Open your browser and navigate to:</p>
-<pre class="hljs"><code><div>http://whoami.local
-</div></code></pre>
-</li>
-<li>
-<p>You should see the response from the <strong>whoami</strong> container, which will display basic information about the HTTP request (such as headers, IP, etc.).</p>
-</li>
-</ol>
-<h3 id="step-8-access-the-https-version-optional">Step 8: Access the HTTPS Version (Optional)</h3>
-<ol>
-<li>
-<p>Caddy automatically provisions an SSL certificate for your domain through Let's Encrypt. To access your service securely, visit:</p>
-<pre class="hljs"><code><div>https://whoami.local
-</div></code></pre>
-<p>Caddy will automatically handle the HTTPS configuration, and your connection will be encrypted.</p>
-</li>
-</ol>
-<h3 id="step-9-stopping-the-containers">Step 9: Stopping the Containers</h3>
-<p>To stop and remove the containers, run the following command:</p>
-<pre class="hljs"><code><div>docker-compose down
-</div></code></pre>
-<p>This stops the containers and removes them, but it retains the data and configuration for the next time you bring the containers back up.</p>
-<h3 id="step-10-restarting-the-containers-optional">Step 10: Restarting the Containers (Optional)</h3>
-<p>If you made changes to the <code>Caddyfile</code> or want to restart the services, you can run:</p>
-<pre class="hljs"><code><div>docker-compose restart
-</div></code></pre>
-<p>This restarts the containers without removing them.</p>
-<hr>
-<h3 id="example-of-a-complete-docker-composeyml-and-caddyfile">Example of a Complete <code>docker-compose.yml</code> and <code>Caddyfile</code></h3>
-<p>Here’s the final version of the <code>docker-compose.yml</code> and <code>Caddyfile</code>:</p>
-<p><strong><code>docker-compose.yml</code></strong>:</p>
-<pre class="hljs"><code><div><span class="hljs-attr">version:</span> <span class="hljs-string">'3.8'</span>
-
-<span class="hljs-attr">services:</span>
-  <span class="hljs-attr">caddy:</span>
-    <span class="hljs-attr">image:</span> <span class="hljs-string">caddy:latest</span>
-    <span class="hljs-attr">container_name:</span> <span class="hljs-string">caddy</span>
-    <span class="hljs-attr">restart:</span> <span class="hljs-string">unless-stopped</span>
-    <span class="hljs-attr">ports:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"80:80"</span>    <span class="hljs-comment"># HTTP port</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"443:443"</span>  <span class="hljs-comment"># HTTPS port</span>
-    <span class="hljs-attr">volumes:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">./Caddyfile:/etc/caddy/Caddyfile</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">./data:/data</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">./config:/config</span>
-    <span class="hljs-attr">environment:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">ACME_AGREE=true</span>
-    <span class="hljs-attr">networks:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">caddy_network</span>
-
-  <span class="hljs-attr">whoami:</span>
-    <span class="hljs-attr">image:</span> <span class="hljs-string">traefik/whoami</span>
-    <span class="hljs-attr">container_name:</span> <span class="hljs-string">whoami</span>
-    <span class="hljs-attr">labels:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">"traefik.enable=false"</span>
-    <span class="hljs-attr">networks:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">caddy_network</span>
-
-<span class="hljs-attr">networks:</span>
-  <span class="hljs-attr">caddy_network:</span>
-    <span class="hljs-attr">driver:</span> <span class="hljs-string">bridge</span>
-</div></code></pre>
-<p><strong><code>Caddyfile</code></strong>:</p>
-<pre class="hljs"><code><div>whoami.local {
-    reverse_proxy whoami:80
-}
-</div></code></pre>
-<hr>
+<p>That’s it! You have successfully set up Traefik using Docker and Docker Compose, routed traffic to an Nginx container, and optionally enabled HTTPS with Let's Encrypt.</p>
 
 </body>
 </html>
