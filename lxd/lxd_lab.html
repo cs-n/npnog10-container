@@ -366,51 +366,53 @@ code {
     });
   </script>
 <h1 id="lxd">LXD</h1>
-<h3 id="install-lxd-from-snap">Install LXD from snap:</h3>
+<h2 id="install-lxd-from-snap">Install LXD from snap</h2>
 <pre class="hljs"><code><div>sudo snap install lxd
 </div></code></pre>
-<h3 id="initialize-or-start-the-lxd-container-hypervisor-run-the-command">Initialize or start the LXD container hypervisor, run the command:</h3>
+<h2 id="initialize-or-start-the-lxd-container-hypervisor-run-the-command">Initialize or start the LXD container hypervisor, run the command</h2>
 <pre class="hljs"><code><div>sudo lxd init
 </div></code></pre>
-<h3 id="confirm-the-information-provided-by-running-the-command">Confirm the information provided by running the command:</h3>
+<h2 id="confirm-the-information-provided-by-running-the-command">Confirm the information provided by running the command</h2>
 <pre class="hljs"><code><div>sudo lxc profile show default
 </div></code></pre>
-<h3 id="show-storage-list">Show Storage List</h3>
+<h2 id="show-storage-list">Show Storage List</h2>
 <pre class="hljs"><code><div>sudo lxc storage list
 </div></code></pre>
-<h3 id="show-details-of-storage">Show details of storage</h3>
+<h2 id="show-details-of-storage">Show details of storage</h2>
 <pre class="hljs"><code><div>sudo lxc storage show &lt;storage name&gt; 
 sudo lxc storage show storage1
-
 </div></code></pre>
-<h3 id="show-network-list">Show network list</h3>
+<h2 id="show-network-list">Show network list</h2>
 <pre class="hljs"><code><div>lxc network ls
 </div></code></pre>
-<h3 id="show-network-details">Show Network Details</h3>
+<h2 id="show-network-details">Show Network Details</h2>
 <pre class="hljs"><code><div>sudo lxc network show &lt;network name&gt;
 EG: sudo lxc network show lxdbr0
 </div></code></pre>
-<h3 id="you-can-list-all-the-prebuilt-containers-that-are-available-for-download-using-the-command">You can list all the prebuilt containers that are available for download using the command:</h3>
+<h2 id="you-can-list-all-the-prebuilt-containers-that-are-available-for-download-using-the-command">You can list all the prebuilt containers that are available for download using the command</h2>
 <pre class="hljs"><code><div>sudo lxc image list images:
 sudo lxc image list images: | grep -i alpine
 </div></code></pre>
-<h3 id="start-lxc-container">Start lxc container</h3>
+<h2 id="start-lxc-container">Start lxc container</h2>
 <pre class="hljs"><code><div>lxc launch image:alpine/3.20 a1
 </div></code></pre>
-<h3 id="lxc-container-console-access">lxc container console access</h3>
-<pre class="hljs"><code><div>lxc exec &lt;container name&gt; &lt;shell&gt;
-EG: lxc exec a1 sh
+<h2 id="lxc-container-console-access">lxc container console access</h2>
+<pre class="hljs"><code><div>lxc <span class="hljs-built_in">exec</span> &lt;container name&gt; &lt;shell&gt;
+EG: lxc <span class="hljs-built_in">exec</span> a1 sh
 </div></code></pre>
-<h3 id="stop-lxc-container">Stop lxc container</h3>
+<h2 id="stop-lxc-container">Stop lxc container</h2>
 <pre class="hljs"><code><div>lxc stop &lt;container name&gt;
 EG: lxc stop a1
 </div></code></pre>
-<h3 id="destroy-lxc-container">Destroy lxc container</h3>
+<h2 id="destroy-lxc-container">Destroy lxc container</h2>
 <pre class="hljs"><code><div>lxc delete &lt;container name&gt;
 EG: lxc delete a1
 </div></code></pre>
-<p>Further details:
-<a href="https://documentation.ubuntu.com/lxd/en/latest/?_ga=2.91941594.1329653141.1700868845-1063360542.1700868845">https://documentation.ubuntu.com/lxd/en/latest/?_ga=2.91941594.1329653141.1700868845-1063360542.1700868845</a></p>
+<h2 id="further-details">Further details</h2>
+<ul>
+<li><a href="https://canonical.com/lxd">LXD Homepage</a></li>
+<li><a href="https://documentation.ubuntu.com/lxd/en/latest/?_ga=2.91941594.1329653141.1700868845-1063360542.1700868845">LXD Documentation</a></li>
+</ul>
 
 </body>
 </html>
